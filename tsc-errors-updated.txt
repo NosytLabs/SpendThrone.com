@@ -1,0 +1,90 @@
+src/components/treasury/RoyalTributeInterface.tsx(1,51): error TS6133: 'useMemo' is declared but its value is never read.
+src/components/treasury/RoyalTributeInterface.tsx(1,60): error TS6133: 'memo' is declared but its value is never read.
+src/components/treasury/RoyalTributeInterface.tsx(4,1): error TS6192: All imports in import declaration are unused.
+src/components/treasury/RoyalTributeInterface.tsx(5,1): error TS6133: 'toast' is declared but its value is never read.
+src/components/treasury/RoyalTributeInterface.tsx(5,23): error TS2307: Cannot find module 'react-hot-toast' or its corresponding type declarations.
+src/components/treasury/RoyalTributeInterface.tsx(6,1): error TS6192: All imports in import declaration are unused.
+src/components/treasury/RoyalTributeInterface.tsx(7,1): error TS6133: 'Button' is declared but its value is never read.
+src/components/treasury/RoyalTributeInterface.tsx(8,1): error TS6133: 'Input' is declared but its value is never read.
+src/components/treasury/RoyalTributeInterface.tsx(9,1): error TS6133: 'Badge' is declared but its value is never read.
+src/components/treasury/RoyalTributeInterface.tsx(10,1): error TS6133: 'Separator' is declared but its value is never read.
+src/components/treasury/RoyalTributeInterface.tsx(10,27): error TS2307: Cannot find module '../ui/separator' or its corresponding type declarations.
+src/components/treasury/RoyalTributeInterface.tsx(11,1): error TS6192: All imports in import declaration are unused.
+src/components/treasury/RoyalTributeInterface.tsx(12,1): error TS6133: 'cn' is declared but its value is never read.
+src/components/treasury/RoyalTributeInterface.tsx(12,20): error TS2307: Cannot find module '../../lib/utils' or its corresponding type declarations.
+src/components/treasury/RoyalTributeInterface.tsx(13,1): error TS6133: 'useUnifiedStore' is declared but its value is never read.
+src/components/treasury/RoyalTributeInterface.tsx(14,1): error TS6133: 'swapService' is declared but its value is never read.
+src/components/treasury/RoyalTributeInterface.tsx(15,1): error TS6133: 'logger' is declared but its value is never read.
+src/components/treasury/RoyalTributeInterface.tsx(16,1): error TS6133: 'SOLANA_CONFIG' is declared but its value is never read.
+src/components/treasury/RoyalTributeInterface.tsx(17,1): error TS6192: All imports in import declaration are unused.
+src/components/treasury/RoyalTributeInterface.tsx(18,1): error TS6192: All imports in import declaration are unused.
+src/components/treasury/RoyalTributeInterface.tsx(19,1): error TS6133: 'AchievementNotification' is declared but its value is never read.
+src/components/treasury/RoyalTributeInterface.tsx(20,1): error TS6192: All imports in import declaration are unused.
+src/components/treasury/RoyalTributeInterface.tsx(30,11): error TS6196: 'SwapResult' is declared but never used.
+src/components/treasury/RoyalTributeInterface.tsx(77,11): error TS6133: 'toastId' is declared but its value is never read.
+src/components/treasury/RoyalTributeInterface.tsx(94,67): error TS2339: Property 'serialize' does not exist on type 'never'.
+src/components/treasury/RoyalTributeInterface.tsx(139,41): error TS2339: Property 'marketInfos' does not exist on type 'RouteInfo'.
+src/components/treasury/RoyalTributeInterface.tsx(142,54): error TS2339: Property 'outAmount' does not exist on type 'RouteInfo'.
+src/components/ui/RouteErrorBoundary.tsx(73,67): error TS2345: Argument of type 'unknown' is not assignable to parameter of type 'boolean'.
+src/components/ui/UnifiedErrorBoundary.tsx(509,11): error TS2322: Type '{ emoji: string; title: string; message: string; errorDetails: { error: Error; errorInfo: ErrorInfo; errorId: string; stackTrace: string | undefined; componentStack: string | undefined; }; ... 7 more ...; maxRetries: number; }' is not assignable to type 'IntrinsicAttributes & UnifiedErrorDisplayProps'.
+  Property 'onToggleDetails' does not exist on type 'IntrinsicAttributes & UnifiedErrorDisplayProps'.
+src/components/ui/UnifiedErrorDisplay.tsx(2,10): error TS6133: 'AlertTriangle' is declared but its value is never read.
+src/components/ui/UnifiedErrorDisplay.tsx(2,36): error TS6133: 'Home' is declared but its value is never read.
+src/components/ui/UnifiedErrorDisplay.tsx(2,42): error TS6133: 'Mail' is declared but its value is never read.
+src/components/ui/UnifiedErrorDisplay.tsx(156,25): error TS2322: Type 'string | ComponentType<{ className?: string | undefined; }>' is not assignable to type 'ReactNode'.
+  Type 'ComponentClass<{ className?: string | undefined; }, any>' is not assignable to type 'ReactNode'.
+src/pages/LeaderboardPage.tsx(18,1): error TS6133: 'treasuryService' is declared but its value is never read.
+src/pages/LeaderboardPage.tsx(124,17): error TS6133: 'gloryPoints' is declared but its value is never read.
+src/services/core/swapService.ts(6,27): error TS6196: 'JupiterQuoteV6' is declared but never used.
+src/services/core/transactionService.ts(46,55): error TS2339: Property 'address' does not exist on type 'string'.
+src/services/core/transactionService.ts(77,61): error TS2339: Property 'address' does not exist on type 'string'.
+src/services/presearchService.ts(691,16): error TS2532: Object is possibly 'undefined'.
+src/services/UnifiedDataService.ts(237,59): error TS2345: Argument of type 'DataMutation' is not assignable to parameter of type 'string | Record<string, unknown> | undefined'.
+  Type 'DataMutation' is not assignable to type 'Record<string, unknown>'.
+    Index signature for type 'string' is missing in type 'DataMutation'.
+src/services/UnifiedDataService.ts(407,27): error TS2532: Object is possibly 'undefined'.
+src/services/UnifiedDataService.ts(470,43): error TS2345: Argument of type 'DataMutation' is not assignable to parameter of type 'string | Record<string, unknown> | undefined'.
+  Type 'DataMutation' is not assignable to type 'Record<string, unknown>'.
+    Index signature for type 'string' is missing in type 'DataMutation'.
+src/services/UnifiedErrorService.ts(122,2): error TS1238: Unable to resolve signature of class decorator when called as an expression.
+  Argument of type 'typeof UnifiedErrorService' is not assignable to parameter of type 'new (...args: unknown[]) => any'.
+    Types of construct signatures are incompatible.
+      Type 'new (config?: Partial<UnifiedErrorConfig>) => UnifiedErrorService' is not assignable to type 'new (...args: unknown[]) => any'.
+        Types of parameters 'config' and 'args' are incompatible.
+          Type 'unknown' is not assignable to type 'Partial<UnifiedErrorConfig> | undefined'.
+src/services/UnifiedErrorService.ts(128,11): error TS6133: 'errorQueue' is declared but its value is never read.
+src/services/UnifiedErrorService.ts(269,64): error TS2353: Object literal may only specify known properties, and 'requestId' does not exist in type 'ErrorHandlingOptions'.
+src/services/UnifiedErrorService.ts(564,35): error TS2345: Argument of type '() => void' is not assignable to parameter of type '() => Promise<unknown>'.
+  Type 'void' is not assignable to type 'Promise<unknown>'.
+src/services/unifiedMonitoringService.ts(8,1): error TS6192: All imports in import declaration are unused.
+src/services/unifiedMonitoringService.ts(9,1): error TS6133: 'SecureWalletStorage' is declared but its value is never read.
+src/services/UnifiedPriceService.ts(1,42): error TS6133: 'ServiceMetrics' is declared but its value is never read.
+src/services/UnifiedPriceService.ts(73,19): error TS4114: This member must have an 'override' modifier because it overrides a member in the base class 'BaseCoreService'.
+src/services/UnifiedPriceService.ts(179,49): error TS2353: Object literal may only specify known properties, and 'delay' does not exist in type 'RetryConfig'.
+src/services/UnifiedPriceService.ts(186,64): error TS2345: Argument of type 'unknown' is not assignable to parameter of type 'string | Record<string, unknown> | undefined'.
+src/services/UnifiedPriceService.ts(251,50): error TS2345: Argument of type 'unknown' is not assignable to parameter of type 'string | Record<string, unknown> | undefined'.
+src/services/UnifiedPriceService.ts(293,50): error TS2345: Argument of type 'unknown' is not assignable to parameter of type 'string | Record<string, unknown> | undefined'.
+src/services/UnifiedPriceService.ts(331,52): error TS2345: Argument of type 'unknown' is not assignable to parameter of type 'string | Record<string, unknown> | undefined'.
+src/services/walletMonitorService.ts(36,2): error TS1238: Unable to resolve signature of class decorator when called as an expression.
+  Argument of type 'typeof WalletMonitorService' is not assignable to parameter of type 'new (...args: unknown[]) => any'.
+    Types of construct signatures are incompatible.
+      Type 'new (connection: Connection) => WalletMonitorService' is not assignable to type 'new (...args: unknown[]) => any'.
+        Types of parameters 'connection' and 'args' are incompatible.
+          Type 'unknown' is not assignable to type 'Connection'.
+src/services/walletMonitorService.ts(44,11): error TS6133: 'monitoringInterval' is declared but its value is never read.
+src/services/walletMonitorService.ts(362,39): error TS6133: 'publicKey' is declared but its value is never read.
+src/services/walletMonitorService.ts(503,43): error TS2345: Argument of type 'SecurityAlert' is not assignable to parameter of type 'string | Record<string, unknown> | undefined'.
+  Type 'SecurityAlert' is not assignable to type 'Record<string, unknown>'.
+    Index signature for type 'string' is missing in type 'SecurityAlert'.
+src/store/useDepositStore.ts(43,5): error TS2740: Type '{ data: Transaction[]; loading: boolean; error: string | null; }' is missing the following properties from type 'Transaction[]': length, pop, push, concat, and 28 more.
+src/store/useDepositStore.ts(44,27): error TS2551: Property 'deposit' does not exist on type 'UnifiedStore'. Did you mean 'deposits'?
+src/store/useDepositStore.ts(45,25): error TS2551: Property 'deposit' does not exist on type 'UnifiedStore'. Did you mean 'deposits'?
+src/store/useDepositStore.ts(48,39): error TS2551: Property 'setDepositHistory' does not exist on type '{ fetchDepositHistory: () => Promise<void>; addDepositTransaction: (transaction: Transaction) => void; }'. Did you mean 'fetchDepositHistory'?
+src/store/useDepositStore.ts(49,32): error TS2339: Property 'setLoading' does not exist on type '{ fetchDepositHistory: () => Promise<void>; addDepositTransaction: (transaction: Transaction) => void; }'.
+src/store/useDepositStore.ts(50,30): error TS2339: Property 'setError' does not exist on type '{ fetchDepositHistory: () => Promise<void>; addDepositTransaction: (transaction: Transaction) => void; }'.
+src/store/useDepositStore.ts(51,32): error TS2339: Property 'addDeposit' does not exist on type '{ fetchDepositHistory: () => Promise<void>; addDepositTransaction: (transaction: Transaction) => void; }'.
+src/store/useTreasuryStore.ts(48,5): error TS2739: Type '{ data: TreasuryStats | null; loading: boolean; error: string | null; }' is missing the following properties from type 'TreasuryStats': totalVolume, totalUsers, averageSpend, topSpender
+src/store/useTreasuryStore.ts(53,39): error TS2551: Property 'setTreasuryStats' does not exist on type '{ fetchTreasuryStats: () => Promise<void>; }'. Did you mean 'fetchTreasuryStats'?
+src/store/useTreasuryStore.ts(54,33): error TS2339: Property 'setLoading' does not exist on type '{ fetchTreasuryStats: () => Promise<void>; }'.
+src/store/useTreasuryStore.ts(55,31): error TS2339: Property 'setError' does not exist on type '{ fetchTreasuryStats: () => Promise<void>; }'.
+src/store/useUIGlobalStore.ts(8,3): error TS6133: 'useUnifiedStore' is declared but its value is never read.

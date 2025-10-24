@@ -1,0 +1,33 @@
+{
+  "name": "spendthrone",
+  "version": "1.0.0",
+  "description": "A modern web application built with React, TypeScript, and Node.js with Express",
+  "main": "dist/server/index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
+    "dev:client": "cd client && npm run dev",
+    "dev:server": "cd server && npm run dev",
+    "build": "node build-project.js",
+    "build:client": "cd client && npm run build",
+    "build:server": "cd server && npm run build",
+    "start": "node dist/server/index.js",
+    "test": "npm run test:client && npm run test:server",
+    "test:client": "cd client && npm test",
+    "test:server": "cd server && npm test",
+    "lint": "npm run lint:client && npm run lint:server",
+    "lint:client": "cd client && npm run lint",
+    "lint:server": "cd server && npm run lint"
+  },
+  "keywords": [
+    "react",
+    "typescript",
+    "node.js",
+    "express",
+    "web application"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
