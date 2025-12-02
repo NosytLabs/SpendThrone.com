@@ -1,0 +1,181 @@
+/* Leaderboard Page Styles */
+
+/* Header Section */
+.headerSection {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.headerTitle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.headerSubtitle {
+  font-size: 1.125rem;
+  color: var(--text-secondary);
+  max-width: 42rem;
+  margin: 0 auto;
+}
+
+/* Degraded Mode Banner */
+.degradedBanner {
+  background-color: var(--warning/10);
+  border: 1px solid var(--warning/30);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.degradedBannerContent {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.degradedBannerTitle {
+  font-weight: 600;
+  color: var(--warning);
+}
+
+.degradedBannerText {
+  font-size: 0.875rem;
+  color: var(--warning/80);
+}
+
+/* User Rank Card */
+.userRankCard {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.userRankContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.userRankInfo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.userRankIcon {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  background-color: var(--accent-primary/10);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.userRankTitle {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.userRankValue {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--accent-primary);
+}
+
+.climbButton {
+  background-color: var(--accent-primary);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.climbButton:hover {
+  background-color: var(--accent-primary/80);
+}
+
+/* Error State */
+.errorContainer {
+  min-height: 100vh;
+  background-color: var(--background-primary);
+  padding-top: 5rem;
+}
+
+.errorContent {
+  text-align: center;
+  padding: 3rem 0;
+}
+
+.errorIcon {
+  color: var(--error);
+  margin: 0 auto 1rem;
+}
+
+.errorTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.errorText {
+  color: var(--text-secondary);
+  margin-bottom: 1rem;
+}
+
+.retryButton {
+  background-color: var(--accent-primary);
+  color: white;
+  padding: 0.5rem 1.5rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.retryButton:hover {
+  background-color: var(--accent-primary/80);
+}
+
+/* Stats Footer */
+.statsFooter {
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.statsText {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .headerTitle {
+    font-size: 2rem;
+  }
+  
+  .headerSubtitle {
+    font-size: 1rem;
+  }
+  
+  .userRankContent {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+  
+  .climbButton {
+    width: 100%;
+    justify-content: center;
+  }
+}

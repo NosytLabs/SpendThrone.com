@@ -1,0 +1,410 @@
+.tableContainer {
+  background: rgba(15, 11, 30, 0.6);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 215, 0, 0.15);
+  border-radius: var(--border-radius-lg);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: auto; /* Ensure horizontal scroll on small screens */
+}
+
+.tableContainer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--color-gold-400), transparent);
+  opacity: 0.6;
+}
+
+.table {
+  width: auto;
+  min-width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+  table-layout: auto;
+}
+
+.th {
+  padding: var(--space-4) var(--space-3);
+  text-align: left;
+  font-weight: var(--font-weight-semibold);
+  color: var(--theme-text-secondary, #cccccc);
+  background: var(--bg-surface); /* Solid background needed for sticky header */
+  border-bottom: 1px solid var(--border-color);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  backdrop-filter: blur(12px); /* Keep glass effect if desired */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.headerCell {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.td {
+  padding: var(--space-4) var(--space-3); /* Increased vertical padding */
+  border-bottom: 1px solid var(--border-color);
+  vertical-align: middle;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast);
+}
+
+@media (max-width: 640px) {
+  .th, .td {
+    padding: var(--space-1); /* Reduce padding on mobile (0.5rem) */
+    font-size: var(--text-xs); /* Slightly smaller text */
+  }
+  
+  /* Sticky first column on mobile */
+  .th:first-child,
+  .td:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 20;
+    background: var(--color-bg-deep, #02010a); /* Fallback to dark color */
+    backdrop-filter: blur(12px);
+    border-right: 1px solid rgba(255, 215, 0, 0.1);
+  }
+
+  /* Ensure header stays on top of sticky column when scrolling vertically */
+  .th:first-child {
+    z-index: 30;
+  }
+  
+  /* Add a shadow to indicate scrolling */
+  .th:first-child::after,
+  .td:first-child::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: -4px;
+    bottom: 0;
+    width: 4px;
+    background: linear-gradient(to right, rgba(0,0,0,0.1), transparent);
+    pointer-events: none;
+  }
+  
+  .avatar {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+.tr {
+  transition: background-color var(--transition-fast);
+  position: relative;
+}
+
+.tr:hover {
+  background: rgba(var(--color-primary-rgb), 0.03);
+}
+
+.tr:hover .td {
+  border-color: rgba(var(--color-primary-rgb), 0.2);
+}
+
+.highlight {
+  background: rgba(var(--color-accent-rgb), 0.1) !important;
+  border-left: 3px solid var(--color-accent);
+}
+
+.king {
+  background: linear-gradient(90deg, rgba(250, 204, 21, 0.15) 0%, rgba(250, 204, 21, 0.05) 100%) !important;
+  border-left: 3px solid var(--color-gold-400);
+  box-shadow: 0 0 15px rgba(250, 204, 21, 0.1) inset;
+  animation: kingGlow 3s infinite alternate;
+}
+
+@keyframes kingGlow {
+  from {
+    box-shadow: 0 0 15px rgba(250, 204, 21, 0.1) inset, 0 0 10px rgba(250, 204, 21, 0.05);
+  }
+  to {
+    box-shadow: 0 0 25px rgba(250, 204, 21, 0.25) inset, 0 0 20px rgba(250, 204, 21, 0.15);
+  }
+}
+
+.king .rankNumber {
+  color: var(--color-gold-400);
+  text-shadow: 0 0 10px rgba(250, 204, 21, 0.5);
+  animation: textGlow 3s infinite alternate;
+}
+
+@keyframes textGlow {
+  from {
+    text-shadow: 0 0 10px rgba(250, 204, 21, 0.5);
+  }
+  to {
+    text-shadow: 0 0 20px rgba(250, 204, 21, 0.8), 0 0 30px rgba(250, 204, 21, 0.4);
+  }
+}
+
+.highlight .td {
+  border-color: rgba(var(--color-accent-rgb), 0.3);
+}
+
+.textRight {
+  text-align: right;
+}
+
+.textCenter {
+  text-align: center;
+}
+
+.rankCell {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-weight: var(--font-weight-semibold);
+}
+
+.rankNumber {
+  color: var(--theme-text-primary, #ffffff);
+  font-weight: var(--font-weight-bold);
+  min-width: var(--space-4);
+  font-family: 'Cinzel', serif;
+}
+
+.nobleCell {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--border-radius-full);
+  border: 2px solid var(--border-color);
+  background: var(--bg-secondary);
+  transition: all var(--transition-fast);
+}
+
+.avatar:hover {
+  border-color: var(--md-sys-color-primary, #9945ff);
+  transform: scale(1.05);
+}
+
+.valueCell {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-success);
+}
+
+.tierCell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+}
+
+.tierBadge {
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--border-radius-full);
+  font-size: var(--text-xs);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: var(--gradient-primary);
+  color: var(--text-on-primary);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-fast);
+  font-family: 'Cinzel', serif;
+}
+
+.tierBadge:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.countCell {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  font-weight: var(--font-weight-medium);
+  color: var(--theme-text-secondary, #cccccc);
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-8) var(--space-4);
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.emptyState span {
+  font-size: var(--text-sm);
+  opacity: 0.8;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .table {
+    font-size: var(--text-xs);
+  }
+  
+  .th,
+  .td {
+    padding: var(--space-2);
+  }
+  
+  .headerCell {
+    gap: var(--space-1);
+  }
+  
+  .rankCell,
+  .nobleCell,
+  .valueCell,
+  .tierCell,
+  .countCell {
+    gap: var(--space-1);
+  }
+  
+  .avatar {
+    width: 24px;
+    height: 24px;
+  }
+  
+  .tierBadge {
+    padding: var(--space-1) var(--space-2);
+    font-size: 10px;
+  }
+  
+  /* Improve touch targets for mobile */
+  .tr {
+    cursor: pointer;
+  }
+  
+  .td {
+    min-height: 48px; /* Minimum touch target size */
+    display: table-cell;
+    vertical-align: middle;
+  }
+}
+
+@media (max-width: 640px) {
+  .tableContainer {
+    border-radius: var(--border-radius-md);
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    overflow-x: auto;
+  }
+  
+  .table {
+    font-size: 11px;
+    min-width: 100%;
+    width: 100%;
+  }
+  
+  /* Use Tailwind hidden utility classes instead of nth-child for column visibility */
+  
+  .rankCell {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-1);
+  }
+  
+  .nobleCell {
+    gap: var(--space-2);
+  }
+  
+  .avatar {
+    width: 20px;
+    height: 20px;
+  }
+  
+  .tierBadge {
+    padding: 2px var(--space-1);
+    font-size: 9px;
+  }
+  
+  .emptyState {
+    padding: var(--space-6) var(--space-2);
+  }
+  
+  .th,
+  .td {
+    padding: var(--space-2) var(--space-1);
+  }
+  
+  .headerCell {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+  }
+}
+
+/* Animation States */
+.tr {
+  animation: slideInUp 0.3s ease-out;
+}
+
+.tr:nth-child(even) {
+  animation-delay: 0.05s;
+}
+
+.tr:nth-child(odd) {
+  animation-delay: 0.1s;
+}
+
+/* Loading State */
+.loading .td {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(var(--color-primary-rgb), 0.1),
+    transparent
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* High Contrast Mode */
+@media (prefers-contrast: high) {
+  .tableContainer {
+    border: 2px solid var(--theme-text-primary, #ffffff);
+  }
+  
+  .th {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+  }
+  
+  .tierBadge {
+    background: var(--theme-text-primary, #ffffff);
+    color: var(--bg-primary);
+  }
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  .tr,
+  .avatar,
+  .tierBadge {
+    animation: none;
+    transition: none;
+  }
+}

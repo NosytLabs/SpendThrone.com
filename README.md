@@ -1,163 +1,86 @@
-# SpendThrone.com
+# SpendThrone
 
-A comprehensive financial management application with a real-time leaderboard, built with modern web technologies.
+**SpendThrone.com** is a satirical Solana-based dApp for financial status competition. It is a gamified "Pay-to-Win" social experiment where users pay "tributes" (SOL, USDC, or SPL Tokens) to rank up on a global leaderboard.
 
-## Project Overview
+> "Immortalize your status on the blockchain. Join 5,000 years of history."
 
-SpendThrone.com is a full-stack financial management platform that allows users to track their spending, compete with friends, and climb the leaderboard by achieving financial goals. The application features a neon-rich design with real-time updates and gamification elements.
+---
 
-## Technology Stack
+## 📚 Documentation
 
-### Frontend
-- **Framework**: React 18 with TypeScript
-- **Styling**: TailwindCSS
-- **Icons**: Lucide React
-- **Routing**: React Router DOM
-- **State Management**: React Context API
-- **Real-time Communication**: Socket.IO Client
+For detailed architecture, user flows, and design specifications, please refer to the **[Site Documentation](./SITE_DOCUMENTATION.md)**.
 
-### Backend
-- **Runtime**: Node.js
-- **Framework**: Express.js
-- **TypeScript**: For type safety
-- **Real-time Communication**: Socket.IO
-- **Environment Variables**: dotenv
+For a history of updates, see the **[Changelog](./CHANGELOG.md)**.
 
-### Development Tools
-- **Package Manager**: npm
-- **Build Tool**: Vite
-- **Linting**: ESLint
-- **Type Checking**: TypeScript Compiler
+---
 
-## Project Structure
+## 🚀 Features
 
-```
-SpendThrone.com/
-├── client/                 # React frontend application
-│   ├── public/            # Static assets
-│   ├── src/               # React source code
-│   ├── package.json       # Frontend dependencies
-│   └── vite.config.ts     # Vite configuration
-├── server/                # Node.js backend application
-│   ├── src/              # Backend source code
-│   └── package.json      # Backend dependencies
-├── shared/               # Shared types and utilities
-├── package.json          # Root package.json with workspace configuration
-├── tsconfig.json         # TypeScript configuration
-├── .gitignore            # Git ignore rules
-└── README.md             # This file
-```
+- **Global Leaderboard**: Real-time ranking of contributors based on USD value of tributes.
+- **Pay-to-Win Mechanics**:
+  - **Overtake**: One-click button to pay exactly enough to surpass a rival.
+  - **King of the Hill**: Special visual effects for the top rank.
+- **Multi-Token Support**:
+  - Accepts SOL directly.
+  - Accepts **any SPL Token** (Bonk, WIF, JUP, etc.) via **Jupiter Ultra API** integration (auto-swaps to USDC).
+- **Solana Actions (Blinks)**: Unfurlable transactions on X (Twitter) allowing users to pay tribute directly from their feed.
+- **Referral System**: On-chain referral tracking.
 
-## Getting Started
+## 🛠 Tech Stack
 
-### Prerequisites
+- **Frontend**: [React](https://react.dev/) + [Vite](https://vitejs.dev/)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/) + Custom "Royal" Design System
+- **Language**: [TypeScript](https://www.typescriptlang.org/)
+- **Backend/DB**: [Supabase](https://supabase.com/) (PostgreSQL)
+- **Blockchain**:
+  - `@solana/web3.js`
+  - `@solana/wallet-adapter`
+  - Jupiter Aggregator API (v6)
+  - Solana Actions (Blinks)
+- **Testing**: Vitest, Playwright
 
-- Node.js 18+ and npm
-- Git
+## 📦 Installation
 
-### Installation
-
-1. Clone the repository:
+1. **Clone the repository:**
    ```bash
-   git clone https://github.com/yourusername/SpendThrone.com.git
-   cd SpendThrone.com
+   git clone https://github.com/yourusername/spendthrone.git
+   cd spendthrone
    ```
 
-2. Install dependencies:
+2. **Install dependencies:**
    ```bash
    npm install
    ```
 
-3. Set up environment variables:
+3. **Environment Setup:**
+   Copy `.env.example` to `.env` and fill in your keys:
    ```bash
-   # Create a .env file in the server directory
-   cd server
    cp .env.example .env
-   # Edit .env with your configuration
    ```
+   *Required variables:*
+   - `VITE_SUPABASE_URL`
+   - `VITE_SUPABASE_ANON_KEY`
+   - `VITE_RPC_ENDPOINT` (Optional, defaults to public)
 
-### Running the Application
-
-1. Start the development servers:
+4. **Run Development Server:**
    ```bash
-   # From the root directory
    npm run dev
    ```
-   
-   This will start both the frontend and backend servers:
-   - Frontend: http://localhost:5173
-   - Backend: http://localhost:3000
 
-2. For production:
-   ```bash
-   npm run build
-   npm start
-   ```
+## 🧪 Testing
 
-## Features
+- **Unit Tests**: `npm run test` (Vitest)
+- **E2E Tests**: `npm run test:e2e` (Playwright)
+- **Linting**: `npm run lint`
 
-### User Management
-- User registration and authentication
-- Profile management with avatar upload
-- Social connections with friends
+## 📂 Project Structure
 
-### Financial Tracking
-- Expense tracking with categories
-- Income and budget management
-- Financial goal setting and tracking
+- `src/features/`: Business logic modules (Payment, Leaderboard, etc.)
+- `src/components/ui/`: Reusable UI components
+- `api/`: Serverless functions (Solana Actions/Blinks)
+- `supabase/`: Database schema and migrations
+- `docs/`: Audit reports and master plans
 
-### Leaderboard & Gamification
-- Real-time leaderboard based on savings
-- Achievement system with badges
-- Competition with friends
+## 📜 License
 
-### Real-time Updates
-- Live leaderboard updates
-- Real-time notifications
-- Instant financial data sync
-
-## API Endpoints
-
-### Authentication
-- `POST /api/auth/register` - Register a new user
-- `POST /api/auth/login` - User login
-- `POST /api/auth/logout` - User logout
-
-### User Profile
-- `GET /api/user/profile` - Get user profile
-- `PUT /api/user/profile` - Update user profile
-- `POST /api/user/avatar` - Upload avatar
-
-### Financial Data
-- `GET /api/transactions` - Get user transactions
-- `POST /api/transactions` - Add a new transaction
-- `GET /api/budgets` - Get user budgets
-- `POST /api/budgets` - Create a new budget
-
-### Leaderboard
-- `GET /api/leaderboard` - Get leaderboard data
-- `GET /api/leaderboard/friends` - Get friends leaderboard
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Support
-
-For support, please contact support@spendthrone.com or open an issue on GitHub.
-
-## Roadmap
-
-- [ ] Mobile app development
-- [ ] Advanced analytics dashboard
-- [ ] Investment tracking
-- [ ] Group savings challenges
-- [ ] Integration with banks and financial institutions
+Private - Do not distribute.

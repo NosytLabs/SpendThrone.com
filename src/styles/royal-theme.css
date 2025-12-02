@@ -1,0 +1,119 @@
+:root {
+  /* Royal Gold Palette */
+  --color-gold-100: #fff9db;
+  --color-gold-200: #fff0b3;
+  --color-gold-300: #ffe066;
+  --color-gold-400: #ffd700; /* Primary Gold */
+  --color-gold-500: #e6c200;
+  --color-gold-600: #b39700;
+  --color-gold-700: #806b00;
+  --color-gold-800: #4d4000;
+  --color-gold-900: #1a1500;
+
+  /* Royal Purple Palette (Solana Enhanced) */
+  --color-purple-100: #f3e8ff;
+  --color-purple-200: #d8b4fe;
+  --color-purple-300: #c084fc;
+  --color-purple-400: #c084fc; /* Updated for contrast */
+  --color-purple-500: #b779f7; /* Lighter Solana Purple */
+  --color-purple-600: #9f7aea;
+  --color-purple-700: #6b21a8;
+  --color-purple-800: #581c87;
+  --color-purple-900: #3b0764; /* Deep Royal Purple */
+
+  /* Dark Mode Backgrounds */
+  --color-bg-deep: #02010a; /* Almost black with purple tint */
+  --color-bg-card: #0f0b1e; /* Dark purple/black for cards */
+  --color-bg-overlay: rgba(15, 11, 30, 0.7);
+
+  /* Semantic Overrides */
+  --color-primary: var(--color-gold-400);
+  --color-secondary: var(--color-purple-500);
+  --color-accent-primary: var(--color-gold-400);
+  --color-accent-secondary: var(--color-purple-500);
+  
+  /* Tier Colors */
+  --color-tier-bronze: #cd7f32;
+  --color-tier-silver: #c0c0c0;
+  --color-tier-gold: var(--color-gold-400);
+  --color-tier-platinum: #e5e4e2;
+  --color-tier-diamond: #b9f2ff;
+  
+  /* Gaming Tiers */
+  --color-tier-common: #9ca3af; /* Gray-400 */
+  --color-tier-rare: #3b82f6; /* Blue-500 */
+  --color-tier-epic: #a855f7; /* Purple-500 */
+  --color-tier-legendary: var(--color-gold-400);
+  --color-tier-mythic: #ef4444; /* Red-500 */
+  
+  /* Status Colors */
+  --color-success: #22c55e; /* Green-500 */
+  --color-warning: #f59e0b; /* Amber-500 */
+  --color-error: #ef4444; /* Red-500 */
+  --color-info: #3b82f6; /* Blue-500 */
+
+  --theme-text-primary: #ffffff;
+  --theme-text-secondary: #d1d5db;
+  --theme-text-muted: #9ca3af;
+}
+
+/* Global Styles for the Revamp */
+body {
+  background-color: var(--color-bg-deep);
+  background-image: 
+    radial-gradient(circle at 50% 0%, rgba(255, 215, 0, 0.08) 0%, transparent 40%),
+    radial-gradient(circle at 15% 50%, rgba(153, 69, 255, 0.08) 0%, transparent 25%), 
+    radial-gradient(circle at 85% 30%, rgba(255, 215, 0, 0.05) 0%, transparent 25%);
+  color: var(--theme-text-primary);
+}
+
+/* Glassmorphism Enhancements */
+.glass-panel {
+  background: rgba(15, 11, 30, 0.6);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 215, 0, 0.15);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+.glass-panel:hover {
+  border-color: rgba(255, 215, 0, 0.4);
+  box-shadow: 0 12px 40px 0 rgba(255, 215, 0, 0.15);
+  background: rgba(15, 11, 30, 0.7);
+}
+
+/* Typography Enhancements */
+h1, h2, h3, h4, h5, h6 {
+  letter-spacing: -0.02em;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-bg-deep);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-purple-900);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-purple-700);
+}
+
+/* Animation Utilities */
+@keyframes shimmer-gold {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-shimmer-gold {
+  background: linear-gradient(90deg, 
+    rgba(255, 215, 0, 0) 0%, 
+    rgba(255, 215, 0, 0.2) 50%, 
+    rgba(255, 215, 0, 0) 100%);
+  background-size: 200% 100%;
+  animation: shimmer-gold 2s infinite linear;
+}

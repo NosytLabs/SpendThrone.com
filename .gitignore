@@ -3,6 +3,7 @@ node_modules/
 */node_modules/
 
 # Production builds
+/dist/
 /client/dist/
 /server/dist/
 

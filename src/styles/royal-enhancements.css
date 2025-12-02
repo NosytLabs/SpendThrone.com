@@ -1,0 +1,349 @@
+/* Royal Theme Enhancements - Quick Implementation */
+
+/* 1. Royal Color Palette */
+:root {
+  --royal-purple: #6B46C1;
+  --royal-gold: #F59E0B;
+  --royal-crimson: #DC2626;
+  --royal-silver: #E5E7EB;
+  --royal-emerald: #059669;
+  --royal-blue: #2563EB;
+  
+  /* Gradients */
+  --royal-gradient: linear-gradient(135deg, var(--royal-purple), var(--royal-gold));
+  --royal-gold-gradient: linear-gradient(135deg, #F59E0B, #FCD34D);
+  --royal-purple-gradient: linear-gradient(135deg, #6B46C1, #9333EA);
+  
+  /* Glow Effects */
+  --royal-glow: radial-gradient(circle, var(--royal-gold), transparent 70%);
+  --royal-shadow: 0 0 20px rgba(245, 158, 11, 0.3);
+}
+
+/* 2. Royal Crown Loader */
+.royal-crown-loader {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+.royal-crown-loader::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: var(--royal-gold-gradient);
+  animation: crown-pulse 2s ease-in-out infinite;
+}
+
+.royal-crown-loader .crown-icon {
+  position: relative;
+  z-index: 2;
+  font-size: 24px;
+  color: var(--royal-purple);
+  animation: crown-float 3s ease-in-out infinite;
+}
+
+@keyframes crown-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.1); opacity: 1; }
+}
+
+@keyframes crown-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+/* 3. Royal Button Enhancement */
+.royal-button {
+  position: relative;
+  background: var(--royal-gradient);
+  border: none;
+  color: white;
+  font-weight: 600;
+  padding: 12px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.royal-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: left 0.5s;
+}
+
+.royal-button:hover::before {
+  left: 100%;
+}
+
+.royal-button:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--royal-shadow);
+}
+
+/* 4. Royal Card Enhancement */
+.royal-card {
+  position: relative;
+  background: linear-gradient(135deg, rgba(107, 70, 193, 0.1), rgba(245, 158, 11, 0.1));
+  border: 1px solid rgba(245, 158, 11, 0.2);
+  border-radius: 12px;
+  padding: 24px;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.royal-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 12px;
+  padding: 1px;
+  background: var(--royal-gold-gradient);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.royal-card:hover::before {
+  opacity: 1;
+}
+
+.royal-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(107, 70, 193, 0.2);
+}
+
+/* 5. Royal Tier Badges */
+.royal-tier-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.royal-tier-badge.legendary {
+  background: var(--royal-gold-gradient);
+  color: var(--royal-purple);
+  box-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+}
+
+.royal-tier-badge.epic {
+  background: var(--royal-purple-gradient);
+  color: white;
+}
+
+.royal-tier-badge.rare {
+  background: linear-gradient(135deg, #2563EB, #3B82F6);
+  color: white;
+}
+
+.royal-tier-badge.common {
+  background: linear-gradient(135deg, #6B7280, #9CA3AF);
+  color: white;
+}
+
+/* 6. Royal Particle System */
+.royal-particles {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.royal-particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: var(--royal-gold);
+  border-radius: 50%;
+  animation: particle-float 10s infinite linear;
+  opacity: 0.6;
+}
+
+@keyframes particle-float {
+  0% {
+    transform: translateY(100vh) translateX(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.6;
+  }
+  90% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateY(-100vh) translateX(100px);
+    opacity: 0;
+  }
+}
+
+/* 7. Royal Loading Messages */
+.royal-loading-text {
+  font-family: 'Georgia', serif;
+  font-style: italic;
+  color: var(--royal-gold);
+  text-align: center;
+  animation: loading-text-pulse 2s ease-in-out infinite;
+}
+
+@keyframes loading-text-pulse {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+
+/* 8. Royal Rank Change Animation */
+.rank-change-animation {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 10px;
+  font-weight: bold;
+  padding: 2px 4px;
+  border-radius: 3px;
+  animation: rank-change-pulse 1s ease-in-out;
+}
+
+.rank-change-animation.rank-up {
+  color: #10B981;
+  background: rgba(16, 185, 129, 0.1);
+}
+
+.rank-change-animation.rank-down {
+  color: #EF4444;
+  background: rgba(239, 68, 68, 0.1);
+}
+
+@keyframes rank-change-pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+/* 9. Royal Glow Effects */
+.royal-glow-effect {
+  position: relative;
+}
+
+.royal-glow-effect::after {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: var(--royal-glow);
+  border-radius: inherit;
+  z-index: -1;
+  animation: glow-pulse 2s ease-in-out infinite;
+}
+
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 0.6; }
+}
+
+/* 10. Royal Success Animation */
+.royal-success-animation {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.royal-success-animation .success-crown {
+  font-size: 32px;
+  color: var(--royal-gold);
+  animation: success-crown-bounce 0.6s ease-out;
+}
+
+.royal-success-animation .success-sparkles {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.royal-success-animation .sparkle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: var(--royal-gold);
+  border-radius: 50%;
+  animation: sparkle-burst 0.8s ease-out forwards;
+}
+
+@keyframes success-crown-bounce {
+  0% { transform: scale(0) rotate(-180deg); }
+  50% { transform: scale(1.2) rotate(0deg); }
+  100% { transform: scale(1) rotate(0deg); }
+}
+
+@keyframes sparkle-burst {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--x), var(--y)) scale(0);
+    opacity: 0;
+  }
+}
+
+/* Utility Classes for Quick Application */
+.royal-text-gradient {
+  background: var(--royal-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.royal-box-shadow {
+  box-shadow: 0 4px 20px rgba(107, 70, 193, 0.3);
+}
+
+.royal-hover-lift {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.royal-hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--royal-shadow);
+}
+
+.royal-pulse-gold {
+  animation: royal-pulse-gold 2s ease-in-out infinite;
+}
+
+@keyframes royal-pulse-gold {
+  0%, 100% { 
+    box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7);
+  }
+  70% { 
+    box-shadow: 0 0 0 10px rgba(245, 158, 11, 0);
+  }
+}
