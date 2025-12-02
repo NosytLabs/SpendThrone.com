@@ -89,11 +89,15 @@ export const usePayment = () => {
         });
         // Reflect deposit in database leaderboard when configured
         try {
-          const { databaseService } = await import('@/core/services/databaseService');
-          await databaseService.upsertLeaderboardEntry(publicKey.toString(), usdValue, {
-            message,
-            incrementTransactions: true
-          });
+          const { trackDeposit } = await import('@/core/services/depositService');
+          await trackDeposit(
+             publicKey.toString(),
+             amount, // SOL amount
+             'SOL',
+             signature,
+             usdValue,
+             message
+           );
         } catch (error) {
           // Silently handle leaderboard update failures - don't block the main payment flow
           debugWarn('Failed to update leaderboard:', error);

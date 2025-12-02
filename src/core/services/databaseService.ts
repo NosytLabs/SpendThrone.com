@@ -5,61 +5,8 @@ import { debugLog } from '@/shared/utils/logger';
 import { LeaderboardEntry } from '@/shared/utils/types';
 import { getTierByUsd } from '@/shared/utils/tierSystem';
 
-// Mock data generator
-async function getMockLeaderboardData(limit = 50): Promise<LeaderboardEntry[]> {
-  const mockData: LeaderboardEntry[] = [
-    {
-      rank: 1,
-      walletAddress: '31M5mtQ2T1B4K9rPieLoiTncDUGWVwgBdiJYm8RhsJCo',
-      displayName: 'KingSolana',
-      totalUsdValue: 5420.50,
-      tier: 'legendary',
-      transactionCount: 15,
-      timeAgo: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-      message: 'Long live the King! 👑',
-      link: 'https://twitter.com/solana'
-    },
-    {
-      rank: 2,
-      walletAddress: '7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU',
-      displayName: 'CryptoWhale',
-      totalUsdValue: 3890.25,
-      tier: 'legendary',
-      transactionCount: 23,
-      timeAgo: new Date(Date.now() - 45 * 60 * 1000).toISOString(),
-      message: 'Catch me if you can 🚀',
-      link: 'https://spendthrone.com'
-    },
-    // Add a few more basics
-    {
-      rank: 3,
-      walletAddress: 'GdNBHNfG6HgjhE4a1uKvT5sVx8RWN8H8fVJH8sWkPg6C',
-      displayName: 'DeFiKnight',
-      totalUsdValue: 2150.75,
-      tier: 'epic',
-      transactionCount: 8,
-      timeAgo: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
-    }
-  ];
+// Mock data generator removed as per implementation plan
 
-  // Fill the rest
-  while (mockData.length < limit) {
-    const baseRank = mockData.length + 1;
-    const randomValue = Math.random() * 100 + 10;
-    const tier = getTierByUsd(randomValue);
-
-    mockData.push({
-      rank: baseRank,
-      walletAddress: `${baseRank}MockWallet${baseRank}xxxxxxxxxxxxxxxxxxxxxxxxxx`,
-      totalUsdValue: randomValue,
-      tier: tier,
-      transactionCount: Math.floor(Math.random() * 5) + 1,
-      timeAgo: new Date(Date.now() - (Math.random() * 24 * 60 * 60 * 1000)).toISOString()
-    });
-  }
-
-  return mockData.slice(0, limit);
-}
 
 export interface DatabaseError extends Error {
   code?: string;
@@ -95,8 +42,8 @@ export class DatabaseService {
    */
   async getLeaderboard(limit = 50): Promise<LeaderboardEntry[]> {
     if (!this.isAvailable()) {
-      debugLog('Database not available, using mock data', 'warn');
-      return getMockLeaderboardData(limit);
+      debugLog('Database not available', 'error');
+      throw new Error('Database connection not available');
     }
 
     try {
@@ -110,8 +57,8 @@ export class DatabaseService {
         throw new Error(error.message);
       }
       
-      if (!data || data.length === 0) {
-         return getMockLeaderboardData(limit);
+      if (!data) {
+         return [];
       }
 
       return data.map((record, index) => ({
@@ -130,8 +77,7 @@ export class DatabaseService {
         context: 'getLeaderboard',
         fallbackMessage: ErrorMessages.API_ERROR
       });
-      // Fallback to mock data
-      return getMockLeaderboardData(limit);
+      throw error;
     }
   }
 

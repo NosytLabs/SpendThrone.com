@@ -326,10 +326,14 @@ class SwapService {
         status: 'confirmed'
       });
       try {
-        const { databaseService } = await import('@/core/services/databaseService');
-        await databaseService.upsertLeaderboardEntry(wallet.publicKey.toString(), usdValue, {
-          incrementTransactions: true
-        });
+        const { trackDeposit } = await import('@/core/services/depositService');
+        await trackDeposit(
+          wallet.publicKey.toString(),
+          amountSol,
+          'SOL',
+          signature,
+          usdValue
+        );
       } catch (error) {
         // Silently handle leaderboard update failures - don't block the main transaction
         debugWarn('Failed to update leaderboard:', error);
@@ -674,8 +678,15 @@ class SwapService {
       };
       this.saveLocalDeposit(deposit);
       try {
-        const { databaseService } = await import('@/core/services/databaseService');
-        await databaseService.upsertLeaderboardEntry(owner.toString(), deposit.usdValue, { incrementTransactions: true, message: memo });
+        const { trackDeposit } = await import('@/core/services/depositService');
+        await trackDeposit(
+          owner.toString(),
+          amountUsdc,
+          'USDC',
+          signature,
+          deposit.usdValue,
+          memo
+        );
       } catch (error) {
         // Silently handle leaderboard update failures - don't block the main transaction
         debugWarn('Failed to update leaderboard:', error);

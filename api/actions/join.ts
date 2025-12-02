@@ -1,7 +1,7 @@
 import { Connection, PublicKey, SystemProgram, Transaction, TransactionInstruction, LAMPORTS_PER_SOL, clusterApiUrl } from '@solana/web3.js';
-import { DEFAULT_TREASURY } from '../../src/core/constants/endpoints';
 
 // Constants
+const DEFAULT_TREASURY = '31M5mtQ2T1B4K9rPieLoiTncDUGWVwgBdiJYm8RhsJCo';
 const TREASURY_ADDRESS = process.env.TREASURY_ADDRESS || process.env.VITE_TREASURY_ADDRESS || DEFAULT_TREASURY;
 // Assuming the domain is where it's hosted, but for icon we need absolute URL.
 // Using a placeholder that points to the likely production URL or relative if supported (Blinks usually need absolute).

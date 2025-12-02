@@ -21,7 +21,8 @@ export const useLeaderboard = () => {
     } catch (err) {
       errorHandler.handleError(err, {
         context: 'fetchLeaderboard',
-        fallbackMessage: ErrorMessages.API_ERROR
+        fallbackMessage: ErrorMessages.API_ERROR,
+        showToast: true
       });
     } finally {
       setIsLoading(false);
