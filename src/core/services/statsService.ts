@@ -89,18 +89,16 @@ class StatsService {
         const entry = await databaseService.getUserLeaderboardEntry(walletAddress);
         if (entry) {
           const tier = getTierByUsd(entry.total_usd_value);
-          // We need to find rank. getLeaderboard gets top 50. 
-          // For now, if they are not in top 50, rank is unknown (or we need a separate query for rank).
-          // databaseService.getUserLeaderboardEntry returns raw record, not rank.
+          const rank = await databaseService.getRankForUser(walletAddress);
           
           return {
             totalBalance: 0, // Wallet balance not tracked in DB
             totalEarned: 0,
             activeStakes: 0,
-            globalRank: 0, // TODO: Implement getRankForUser in databaseService
+            globalRank: rank,
             currentTier: tier,
             tier: tier,
-            rank: 0,
+            rank: rank,
             totalDeposits: entry.transaction_count,
             totalUsdValue: entry.total_usd_value
           };

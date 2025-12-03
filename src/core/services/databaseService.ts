@@ -115,6 +115,37 @@ export class DatabaseService {
   }
 
   /**
+   * Get a user's global rank
+   */
+  async getRankForUser(walletAddress: string): Promise<number> {
+    if (!this.isAvailable()) {
+      return 0;
+    }
+
+    try {
+      const userEntry = await this.getUserLeaderboardEntry(walletAddress);
+      if (!userEntry) return 0;
+
+      const { count, error } = await supabase!
+        .from('leaderboard')
+        .select('*', { count: 'exact', head: true })
+        .gt('total_usd_value', userEntry.total_usd_value);
+
+      if (error) {
+        throw new Error(ErrorMessages.API_ERROR);
+      }
+
+      return (count || 0) + 1;
+    } catch (error) {
+      this.errorHandler.handleError(error, {
+        context: 'getRankForUser',
+        fallbackMessage: ErrorMessages.API_ERROR
+      });
+      return 0;
+    }
+  }
+
+  /**
    * Update or create a leaderboard entry
    */
   async upsertLeaderboardEntry(

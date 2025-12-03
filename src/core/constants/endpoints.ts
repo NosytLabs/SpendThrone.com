@@ -46,6 +46,12 @@ export function getTreasuryAddress(): string {
   return value;
 }
 
+export function getTreasuryUsdcAccount(): string | null {
+  const envVars = (import.meta as unknown as { env?: Record<string, string | undefined> }).env || {};
+  const account = envVars.VITE_TREASURY_USDC_ACCOUNT || envVars.REACT_APP_TREASURY_USDC_ACCOUNT;
+  return account && /^([1-9A-HJ-NP-Za-km-z]{32,44})$/.test(String(account)) ? String(account) : null;
+}
+
 // Get preferred RPC URL with environment precedence.
 // Order: VITE_HELIUS_RPC_URL -> VITE_SOLANA_RPC_URL -> devnet/mainnet fallback by network.
 export function getRpcUrl(): string {

@@ -43,7 +43,7 @@ export type DepositRecord = {
 };
 import { priceService } from '@/core/services/priceService';
 import { apiClient } from '@/core/services/apiClient';
-import { getTreasuryAddress } from '@/core/constants/endpoints';
+import { getTreasuryAddress, getTreasuryUsdcAccount } from '@/core/constants/endpoints';
 
 // Use centralized constants for mint addresses
 
@@ -611,7 +611,7 @@ class SwapService {
       onStatusUpdate?.('Preparing USDC transfer...');
 
       // Resolve destination treasury USDC ATA
-      const treasuryUsdcAccountStr = (import.meta.env.VITE_TREASURY_USDC_ACCOUNT || import.meta.env.REACT_APP_TREASURY_USDC_ACCOUNT);
+      const treasuryUsdcAccountStr = getTreasuryUsdcAccount();
       const destinationAta = treasuryUsdcAccountStr
         ? new PublicKey(treasuryUsdcAccountStr)
         : await getAssociatedTokenAddress(usdcMint, treasuryPubkey);
