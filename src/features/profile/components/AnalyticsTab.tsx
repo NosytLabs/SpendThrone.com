@@ -1,7 +1,7 @@
 import React from 'react';
 import { RoyalCard, RoyalIcon } from '@/components/ui';
 import { formatCurrency } from '@/shared/utils/formatting/currency';
-import { UserData, RankHistoryPoint } from '@/core/data/mockProfileData';
+import { UserData, RankHistoryPoint } from '@/shared/utils/types';
 
 interface AnalyticsTabProps {
   userData: UserData;

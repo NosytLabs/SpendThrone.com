@@ -1,7 +1,7 @@
 import React from 'react';
 import { RoyalCard, Badge, RoyalIcon, ProgressBar, LottieAnimation, GlowPulse, ShimmerEffect } from '@/components/ui';
 import { formatDistanceToNow } from 'date-fns';
-import { UserData } from '@/core/data/mockProfileData';
+import { UserData } from '@/shared/utils/types';
 import { CopyToClipboard } from '@/components/ui';
 
 interface OverviewTabProps {

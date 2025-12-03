@@ -2,7 +2,7 @@ import React from 'react';
 import { RoyalCard, Badge, RoyalIcon, EntranceAnimation } from '@/components/ui';
 import { formatCurrency } from '@/shared/utils/formatting/currency';
 import { formatDistanceToNow } from 'date-fns';
-import { Transaction } from '@/core/data/mockProfileData';
+import { Transaction } from '@/shared/utils/types';
 
 interface HistoryTabProps {
   transactions: Transaction[];

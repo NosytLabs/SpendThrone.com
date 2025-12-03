@@ -1,3 +1,4 @@
+import { RoyalIconProps } from '@/components/ui/RoyalIcon';
 
 export interface LeaderboardEntry {
   rank: number;
@@ -90,3 +91,50 @@ export type BackendLeaderboardItem = {
   transactionCount?: number;
   timestamp?: number;
 };
+
+export interface Achievement {
+  id: number;
+  name: string;
+  description: string;
+  icon: RoyalIconProps['variant'];
+  unlockedAt: string;
+  rarity: 'common' | 'rare' | 'epic' | 'legendary';
+}
+
+export interface Transaction {
+  id: number;
+  amount: number;
+  currency: string;
+  timestamp: string;
+  type: string;
+  rankChange: number;
+}
+
+export interface RankHistoryPoint {
+  date: string;
+  rank: number;
+}
+
+export interface UserProfileStats {
+  averageContribution: number;
+  largestContribution: number;
+  totalDaysActive: number;
+  longestStreak: number;
+  currentStreak: number;
+  rankHistory: RankHistoryPoint[];
+}
+
+export interface UserData {
+  walletAddress: string;
+  displayName: string;
+  avatar: string;
+  rank: number | null;
+  totalContributed: number;
+  totalTransactions: number;
+  joinedDate: string;
+  lastActive: string;
+  tier: string;
+  achievements: Achievement[];
+  recentTransactions: Transaction[];
+  stats: UserProfileStats;
+}

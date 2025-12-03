@@ -1,7 +1,7 @@
 import React from 'react';
 import { ShimmerCard, Badge, RoyalIcon, EntranceAnimation, BounceAnimation } from '@/components/ui';
 import { formatDistanceToNow } from 'date-fns';
-import { Achievement } from '@/core/data/mockProfileData';
+import { Achievement } from '@/shared/utils/types';
 
 interface AchievementsTabProps {
   achievements: Achievement[];

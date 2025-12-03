@@ -28,7 +28,29 @@ import { swapService } from '@/core/services/swapService';
 import { logError } from '@/shared/utils/logger';
 import { useDegradedMode } from '@/shared/hooks/useDegradedMode';
 
-import { mockUserData, UserData, Transaction } from '@/core/data/mockProfileData';
+import { UserData, Transaction, Achievement, RankHistoryPoint } from '@/shared/utils/types';
+
+// Fallback/Demo Data
+const FALLBACK_ACHIEVEMENTS: Achievement[] = [
+  { id: 1, name: "First Tribute", description: "Made your first contribution", icon: "rocket", unlockedAt: "2024-01-15", rarity: "common" },
+  { id: 2, name: "High Roller", description: "Contributed over $10,000", icon: "diamond", unlockedAt: "2024-03-20", rarity: "legendary" },
+  { id: 3, name: "Consistency King", description: "Made contributions 30 days in a row", icon: "fire", unlockedAt: "2024-02-14", rarity: "epic" },
+  { id: 4, name: "Top 10", description: "Reached top 10 on leaderboard", icon: "trophy", unlockedAt: "2024-05-10", rarity: "rare" }
+];
+
+const FALLBACK_RANK_HISTORY: RankHistoryPoint[] = [
+  { date: "2024-01", rank: 156 },
+  { date: "2024-02", rank: 89 },
+  { date: "2024-03", rank: 42 },
+  { date: "2024-04", rank: 18 },
+  { date: "2024-05", rank: 7 },
+  { date: "2024-06", rank: 5 },
+  { date: "2024-07", rank: 4 },
+  { date: "2024-08", rank: 3 },
+  { date: "2024-09", rank: 3 },
+  { date: "2024-10", rank: 3 },
+  { date: "2024-11", rank: 3 }
+];
 
 // Sub-components
 import { OverviewTab } from '@/features/profile/components/OverviewTab';
@@ -126,15 +148,15 @@ const Profile: React.FC = () => {
             joinedDate: "2024-01-15T10:00:00Z", // Fixed date for consistency
             lastActive: new Date().toISOString(),
             tier: userEntry.tier || 'legendary',
-            achievements: mockUserData.achievements, // Keep achievements as mock for now
-            recentTransactions: localTransactions.length > 0 ? localTransactions : mockUserData.recentTransactions,
+            achievements: FALLBACK_ACHIEVEMENTS, // Keep achievements as mock for now
+            recentTransactions: localTransactions.length > 0 ? localTransactions : [],
             stats: {
               averageContribution: (Math.max(userEntry.totalUsdValue, localTotalContributed)) / (Math.max(userEntry.transactionCount || 1, localDeposits.length) || 1),
               largestContribution: Math.max(userEntry.totalUsdValue * 0.8, ...localDeposits.map(d => d.usdValue)), // Estimate
               totalDaysActive: Math.floor(Math.random() * 300) + 30,
               longestStreak: Math.floor(Math.random() * 50) + 10,
               currentStreak: Math.floor(Math.random() * 20) + 1,
-              rankHistory: mockUserData.stats.rankHistory // Keep as mock for now
+              rankHistory: FALLBACK_RANK_HISTORY // Keep as mock for now
             }
           });
         } else if (localDeposits.length > 0) {
@@ -200,7 +222,7 @@ const Profile: React.FC = () => {
           description: 'Unable to fetch your profile data. Please try again.',
           duration: 5000
         });
-        setUserData(mockUserData);
+        setUserData(null);
       } finally {
         setLoading(false);
       }
