@@ -1,5 +1,8 @@
 import { RoyalIconProps } from '@/components/ui/RoyalIcon';
 
+/**
+ * Represents an entry in the global leaderboard.
+ */
 export interface LeaderboardEntry {
   rank: number;
   walletAddress: string;
@@ -124,6 +127,9 @@ export interface UserProfileStats {
   rankHistory: RankHistoryPoint[];
 }
 
+/**
+ * Aggregated user data for the Profile page.
+ */
 export interface UserData {
   walletAddress: string;
   displayName: string;

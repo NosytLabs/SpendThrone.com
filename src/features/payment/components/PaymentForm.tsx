@@ -5,20 +5,36 @@ import { RoyalIcon } from '@/components/ui/RoyalIcon';
 import { formatCurrency } from '@/shared/utils/formatting/currency';
 
 interface PaymentFormProps {
+  /** Value of the amount input field */
   inputValue: string;
+  /** Setter for amount input field */
   setInputValue: (value: string) => void;
+  /** Current input mode: 'TOKEN' (crypto) or 'USD' (fiat) */
   inputMode: 'TOKEN' | 'USD';
+  /** Toggle between input modes */
   setInputMode: (mode: 'TOKEN' | 'USD') => void;
+  /** Symbol of the selected token (e.g. 'SOL', 'USDC') */
   tokenSymbol: string;
+  /** Calculated USD value of the payment */
   usdAmount: number;
+  /** Calculated token amount of the payment */
   tokenAmount: number;
+  /** Optional message to attach to the transaction */
   message: string;
+  /** Setter for message */
   setMessage: (msg: string) => void;
+  /** Optional link to attach to the transaction */
   link: string;
+  /** Setter for link */
   setLink: (link: string) => void;
+  /** Current wallet balance (optional) */
   walletBalance?: number;
 }
 
+/**
+ * Form component for handling payment amount, message, and link inputs.
+ * Supports toggling between Token and USD input modes.
+ */
 export const PaymentForm: React.FC<PaymentFormProps> = ({
   inputValue,
   setInputValue,

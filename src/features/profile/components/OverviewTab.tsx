@@ -5,11 +5,18 @@ import { UserData } from '@/shared/utils/types';
 import { CopyToClipboard } from '@/components/ui';
 
 interface OverviewTabProps {
+  /** Full user data object */
   userData: UserData;
+  /** Mapping of tier names to CSS color classes */
   tierColors: Record<string, string>;
+  /** Percentage progress towards next rank (0-100) */
   rankProgress: number;
 }
 
+/**
+ * Overview tab content for the Profile page.
+ * Displays basic profile information and rank progress statistics.
+ */
 export const OverviewTab: React.FC<OverviewTabProps> = ({ userData, tierColors, rankProgress }) => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
