@@ -1,10 +1,30 @@
 import { SYMBOL_TO_MINT } from '../../core/constants/tokens';
-import { JUPITER_PRICE_BASE, getRpcUrl, isHeliusAvailable } from '../../core/constants/endpoints';
-import { debugWarn } from '../../shared/utils/logger';
-import { apiService } from '@/core/api-service';
+import { JUPITER_PRICE_BASE, getRpcUrl, isHeliusAvailable, COINGECKO_PRICE_API } from '../../core/constants/endpoints';
+import { debugWarn, debugLog } from '../../shared/utils/logger';
+import { apiClient } from './apiClient';
+
+export interface PriceData {
+  symbol: string;
+  price: number;
+  change24h: number;
+  volume24h: number;
+  marketCap: number;
+  lastUpdated: number;
+  source: 'jupiter' | 'coingecko' | 'helius' | 'fallback';
+}
+
+export interface CoinGeckoPriceResponse {
+  solana?: {
+    usd: number;
+    usd_24h_change?: number;
+    usd_24h_vol?: number;
+    usd_market_cap?: number;
+  };
+}
 
 class PriceService {
   private priceCache: Map<string, { price: number; timestamp: number }>;
+  private priceDataCache: Map<string, { data: PriceData; timestamp: number }>;
   private cacheExpiry: number;
   private heliusRpcUrl: string;
   private apiKey: string;
@@ -13,6 +33,7 @@ class PriceService {
 
   constructor() {
     this.priceCache = new Map();
+    this.priceDataCache = new Map();
     this.cacheExpiry = 30000; // 30 seconds
     this.heliusRpcUrl = getRpcUrl();
     this.apiKey =
@@ -42,6 +63,58 @@ class PriceService {
   private normalizeId(idOrMint: string): string {
     const key = String(idOrMint).toUpperCase();
     return this.symbolToMint[key] || idOrMint;
+  }
+
+  /**
+   * Get comprehensive SOL price data (price, change, volume, market cap)
+   */
+  async getSolPrice(): Promise<PriceData> {
+    const cacheKey = 'sol_price_data';
+    const cached = this.priceDataCache.get(cacheKey);
+    
+    if (cached && Date.now() - cached.timestamp < this.cacheExpiry) {
+      return cached.data;
+    }
+
+    // Try CoinGecko first for rich data
+    try {
+      const coingeckoResponse = await apiClient.get<CoinGeckoPriceResponse>(`${COINGECKO_PRICE_API}?ids=solana&vs_currencies=usd&include_24hr_change=true&include_24hr_vol=true&include_market_cap=true`);
+      if (coingeckoResponse?.solana?.usd) {
+        const priceData: PriceData = {
+          symbol: 'SOL',
+          price: coingeckoResponse.solana.usd,
+          change24h: coingeckoResponse.solana.usd_24h_change || 0,
+          volume24h: coingeckoResponse.solana.usd_24h_vol || 0,
+          marketCap: coingeckoResponse.solana.usd_market_cap || 0,
+          lastUpdated: Date.now(),
+          source: 'coingecko',
+        };
+        
+        this.priceDataCache.set(cacheKey, { data: priceData, timestamp: Date.now() });
+        // Also update simple price cache
+        this.priceCache.set(`${this.symbolToMint['SOL']}_USD`, { price: priceData.price, timestamp: Date.now() });
+        
+        return priceData;
+      }
+    } catch (error) {
+      debugLog('CoinGecko API failed, trying fallbacks');
+    }
+
+    // Fallback to simple price fetch (Helius/Jupiter)
+    const price = await this.getTokenPrice('SOL');
+    
+    const fallbackData: PriceData = {
+      symbol: 'SOL',
+      price: price || 150.00, // Ultimate fallback
+      change24h: 0,
+      volume24h: 0,
+      marketCap: 0,
+      lastUpdated: Date.now(),
+      source: price > 0 ? (isHeliusAvailable() ? 'helius' : 'jupiter') : 'fallback',
+    };
+
+    this.priceDataCache.set(cacheKey, { data: fallbackData, timestamp: Date.now() });
+    return fallbackData;
   }
 
   async getTokenPrice(tokenIdOrMint: string): Promise<number> {
@@ -100,8 +173,8 @@ class PriceService {
     const url = `${JUPITER_PRICE_BASE}?ids=${id}`;
     const headers = this.getHeaders();
     type JupiterResponse = { data?: Record<string, { price?: number }> };
-    const data = await apiService.get<JupiterResponse>(url, { headers });
-    return data.data?.[id]?.price || 0;
+    const data = await apiClient.get<JupiterResponse>(url, { headers });
+    return Number(data.data?.[id]?.price) || 0;
   }
 
   private async getHeliusTokenPrice(tokenMint: string): Promise<number | null> {
@@ -121,7 +194,7 @@ class PriceService {
 
     try {
         type HeliusAssetResponse = { result?: { token_info?: { price_info?: { price_per_token?: number } } } };
-        const data = await apiService.post<HeliusAssetResponse, typeof body>(this.heliusRpcUrl, body);
+        const data = await apiClient.post<HeliusAssetResponse, typeof body>(this.heliusRpcUrl, body);
         return data.result?.token_info?.price_info?.price_per_token || null;
     } catch (error) {
         debugWarn(`Helius API unavailable, falling back`, error);

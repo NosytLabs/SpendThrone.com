@@ -1,7 +1,7 @@
 // Animation Data Exports
-import solanaLogoData from './solana-logo.json';
-import cryptoWalletData from './crypto-wallet.json';
-import solanaLoadingData from './solana-loading.json';
+import solanaLogoData from './json/solana-logo.json';
+import cryptoWalletData from './json/crypto-wallet.json';
+import solanaLoadingData from './json/solana-loading.json';
 
 // Imported JSON animations (formerly external URLs)
 import cryptoExchangeData from './json/crypto-exchange.json';

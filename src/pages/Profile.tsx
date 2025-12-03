@@ -32,14 +32,12 @@ import { formatDistanceToNow } from 'date-fns';
 import { databaseService } from '@/core/services/databaseService';
 import { swapService } from '@/core/services/swapService';
 import { logError } from '@/shared/utils/logger';
-import { useDegradedMode } from '@/core/hooks/useDegradedMode';
+import { useDegradedMode } from '@/shared/hooks/useDegradedMode';
 
 /**
  * NOTE: This component currently uses a hybrid approach for data.
- * It fetches real data from the leaderboard service and local deposits,
- * but falls back to mock data for achievements and historical stats where the API is not yet ready.
- * 
- * TODO: Replace all mock data with real API calls when the backend endpoints are available.
+ * It fetches real data from the leaderboard service and local deposits.
+ * Mock data is used as a placeholder for features pending backend implementation:
  * - Achievements
  * - Rank History
  * - Detailed Stats

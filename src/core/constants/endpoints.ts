@@ -5,6 +5,11 @@
 export const JUPITER_PRICE_BASE = 'https://api.jup.ag/price/v2';
 // Base URL for Jupiter token cache
 export const JUPITER_TOKENS_CACHE = 'https://cache.jup.ag/tokens';
+
+// CoinGecko API Endpoints
+export const COINGECKO_PRICE_API = 'https://api.coingecko.com/api/v3/simple/price';
+export const COINGECKO_MARKET_API = 'https://api.coingecko.com/api/v3/coins/markets';
+
 // Fallback static token icon (env override via VITE_STATIC_TOKEN_ICON)
 const env = (import.meta as unknown as { env?: Record<string, string | undefined> }).env || {};
 export const JUPITER_STATIC_TOKEN_ICON = env.VITE_STATIC_TOKEN_ICON || 'https://static.jup.ag/token-icon.png';

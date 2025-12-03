@@ -5,8 +5,8 @@ import { PageHeader } from '../components/layout/PageHeader';
 import { RoyalCard, Button, RoyalIcon, useToast } from '../components/ui';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SkeletonCard } from '../components/ui/Skeleton';
-import { apiService } from '../core/api-service';
-import { useLeaderboard } from '../hooks/useLeaderboard';
+import { statsService } from '../core/services/statsService';
+import { useLeaderboard } from '@/features/leaderboard/hooks/useLeaderboard';
 
 const ReferralPyramid: React.FC = () => {
   const { publicKey } = useWallet();
@@ -53,7 +53,7 @@ const ReferralPyramid: React.FC = () => {
     if (publicKey) {
       setLoading(true);
       setError(null);
-      apiService.getReferralStats(publicKey.toString())
+      statsService.getReferralStats(publicKey.toString())
         .then((data) => {
           setStats({
             referralCount: data.referralCount || 0,

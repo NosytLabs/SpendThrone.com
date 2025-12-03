@@ -42,8 +42,8 @@ export {
   UserPreferencesProvider,
   UserPreferencesPanel
 } from './UserPreferences';
-export { useUserPreferences } from './useUserPreferences';
-export type { UserPreferences } from './useUserPreferences';
+export { useUserPreferences } from '@/shared/hooks/useUserPreferences';
+export type { UserPreferences } from '@/shared/hooks/useUserPreferences';
 
 export { 
   CopyToClipboard, 
@@ -87,31 +87,12 @@ export {
   type SkeletonProps,
   type LoadingSkeletonProps
 } from './Skeleton';
-export { LeaderboardSkeleton } from './LeaderboardSkeleton';
 
 export {
   SkipLink,
-  HighContrastMode,
-  ReducedMotion,
-  FocusVisible,
-  AriaLiveRegion,
-  KeyboardNavigationHint,
-  ScreenReaderOnly,
-  ColorContrastChecker
+  KeyboardNavigationHint
 } from './AccessibilityUtilities';
 
-export {
-  LazyLoad,
-  ImageLazyLoad,
-  VirtualScroll,
-  Debounce,
-  Throttle,
-  Memo,
-  PerformanceMonitor,
-  ResourcePreloader
-} from './PerformanceUtilities';
-
-// Enhanced Toast Notifications
 export {
   EnhancedToast,
   EnhancedToastContainer,
@@ -121,4 +102,12 @@ export { useEnhancedToast } from './useEnhancedToast';
 export type { EnhancedToastProps, EnhancedToastContainerProps } from './EnhancedToast';
 export { RoyalIcon } from './RoyalIcon';
 export type { RoyalIconProps } from './RoyalIcon';
-export { Input } from './input';
+export { Input } from './Input';
+export {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogFooter,
+  DialogTitle,
+  DialogDescription,
+} from './Dialog';

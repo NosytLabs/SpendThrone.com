@@ -1,6 +1,16 @@
 import React, { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
-import { Button, Input, RoyalIcon, useToast } from '@/components/ui';
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogHeader, 
+  DialogTitle, 
+  DialogDescription, 
+  DialogFooter,
+  Button, 
+  Input, 
+  RoyalIcon, 
+  useToast 
+} from '@/components/ui';
 import { databaseService } from '@/core/services/databaseService';
 
 interface EditProfileModalProps {

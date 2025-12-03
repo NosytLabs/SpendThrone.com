@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { startIntervalWhenVisible } from '@/shared/utils/visibility';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { apiService, PriceData } from '@/core/api-service';
+import { priceService, PriceData } from '@/core/services/priceService';
+import { statsService } from '@/core/services/statsService';
 import { debugLog } from '@/shared/utils/logger';
 import { createErrorHandler, ErrorMessages } from '@/shared/utils/errorHandler';
 
@@ -54,9 +55,9 @@ export const useHome = (): HomeData => {
       setError(null);
 
       const [solPrice, marketData, fetchedUserStats] = await Promise.all([
-        apiService.getSolPrice(),
-        apiService.getMarketData(),
-        publicKey ? apiService.getUserStats(publicKey.toBase58()) : Promise.resolve(null),
+        priceService.getSolPrice(),
+        statsService.getMarketData(),
+        publicKey ? statsService.getUserStats(publicKey.toBase58()) : Promise.resolve(null),
       ]);
 
       debugLog('marketData from API:', marketData);

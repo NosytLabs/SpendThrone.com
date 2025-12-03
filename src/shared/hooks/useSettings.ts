@@ -4,7 +4,8 @@ import { useWallet } from '@solana/wallet-adapter-react';
 import { getTierFromAmount } from '../utils/tierSystem';
 // import { swapService } from '../utils/swapService'; // Not currently used
 import { UserStats, DepositHistoryItem, PremiumFeaturesData } from '../utils/types';
-import { apiService } from '@/core/api-service';
+import { statsService } from '@/core/services/statsService';
+import { getDepositHistory } from '@/core/services/depositService';
 import { logError } from '../utils/logger';
 
 export const useSettings = () => {
@@ -145,8 +146,8 @@ export const useSettings = () => {
         try {
             const walletAddress = publicKey.toBase58();
             const [userData, historyData] = await Promise.all([
-                apiService.getSettings(walletAddress),
-                apiService.getDepositHistory(walletAddress),
+                statsService.getSettings(walletAddress),
+                getDepositHistory(walletAddress),
                 // apiService.getWalletBalance(walletAddress), // Method doesn't exist - using placeholder
                 // apiService.getTokenBalances(walletAddress), // Temporarily commented out - method doesn't exist
             ]);

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, ReactNode } from 'react';
 import { cn } from '@/shared/utils/utils';
 import { RoyalIcon, RoyalIconProps } from './RoyalIcon';
-import { UserPreferencesContext, useUserPreferences, UserPreferences } from './useUserPreferences';
+import { UserPreferencesContext, useUserPreferences, UserPreferences } from '@/shared/hooks/useUserPreferences';
 
 const defaultPreferences: UserPreferences = {
   theme: 'auto',

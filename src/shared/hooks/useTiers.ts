@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { apiService } from '@/core/api-service';
+import { statsService } from '@/core/services/statsService';
 import { debugLog } from '@/shared/utils/logger';
 
 export const useTiers = () => {
@@ -11,7 +11,7 @@ export const useTiers = () => {
     try {
       setLoading(true);
       setError(null);
-      const data = await apiService.getTiers();
+      const data = await statsService.getTiers();
       setTiers(data);
     } catch (err) {
       setError('Failed to fetch tiers data');

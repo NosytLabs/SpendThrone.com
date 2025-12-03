@@ -5,9 +5,8 @@ import { LeaderboardTable } from '@/features/leaderboard/LeaderboardTable';
 import { LeaderboardFilters } from '@/features/leaderboard/LeaderboardFilters';
 import { PaymentModal } from '@/features/payment/PaymentModal';
 import { RoyalIcon } from '@/components/ui';
-import { useLeaderboard } from '@/hooks/useLeaderboard';
-import { useDegradedMode } from '@/core/hooks/useDegradedMode';
-import { apiService } from '@/core/api-service';
+import { useLeaderboard } from '@/features/leaderboard/hooks/useLeaderboard';
+import { useDegradedMode } from '@/shared/hooks/useDegradedMode';
 import { LoadingLeaderboard } from '@/shared/components/LoadingDisplay';
 import { PageLayout } from '@/components/layout/PageLayout';
 import { PageHeader } from '@/components/layout/PageHeader';
@@ -30,16 +29,6 @@ const Leaderboard: React.FC = () => {
       setUserRank(null);
     }
   }, [publicKey, leaderboard]);
-
-  // Fetch referral stats
-  useEffect(() => {
-    if (publicKey) {
-      // Fetch referral stats but we don't store them locally as they might be handled by the service context
-      apiService.getReferralStats(publicKey.toString()).catch(() => {
-        // Silently handle referral stats fetch errors
-      });
-    }
-  }, [publicKey]);
 
   const handleOvertake = (amount: number) => {
     if (isDegraded) {

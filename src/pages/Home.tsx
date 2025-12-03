@@ -22,7 +22,7 @@ import {
 } from '../components/ui';
 import { LeaderboardTable } from '../features/leaderboard/LeaderboardTable';
 import { KingOfTheHill } from '../features/leaderboard/KingOfTheHill';
-import { useLeaderboard } from '../hooks/useLeaderboard';
+import { useLeaderboard } from '@/features/leaderboard/hooks/useLeaderboard';
 import { PaymentModal } from '../features/payment/PaymentModal';
 import { APP_CONFIG } from '@/core/constants/appConfig';
 import confetti from 'canvas-confetti';

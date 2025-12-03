@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { DegradedModeContext } from '../contexts/DegradedModeContext';
+import { DegradedModeContext } from '@/core/contexts/DegradedModeContext';
 
 export const useDegradedMode = () => {
   const context = useContext(DegradedModeContext);

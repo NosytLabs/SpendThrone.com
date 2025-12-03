@@ -3,7 +3,7 @@ import { useConnection, useWallet } from '@solana/wallet-adapter-react';
 import { PublicKey, SystemProgram, Transaction, LAMPORTS_PER_SOL, TransactionInstruction } from '@solana/web3.js';
 import { Buffer } from 'buffer';
 import { APP_CONFIG } from '@/core/constants/appConfig';
-import { useDegradedMode } from '@/core/hooks/useDegradedMode';
+import { useDegradedMode } from '@/shared/hooks/useDegradedMode';
 import { swapService } from '@/core/services/swapService';
 import { priceService } from '@/core/services/priceService';
 import { logError, debugWarn } from '@/shared/utils/logger';

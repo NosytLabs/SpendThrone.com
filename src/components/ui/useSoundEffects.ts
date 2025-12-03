@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef } from 'react';
-import { useUserPreferences } from './useUserPreferences';
+import { useUserPreferences } from '@/shared/hooks/useUserPreferences';
 
 export type SoundType = 
   | 'click'

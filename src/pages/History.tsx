@@ -9,7 +9,7 @@ import { EntranceAnimation } from '../components/ui/AnimationUtilities';
 import { Button } from '../components/ui/Button';
 import { TimelineItem } from '../features/history/TimelineItem';
 import { historyPageData } from '@/core/data/historyPageData';
-import { useDegradedMode } from '@/core/hooks/useDegradedMode';
+import { useDegradedMode } from '@/shared/hooks/useDegradedMode';
 
 const History: React.FC = () => {
     const { navigateTo } = useAppNavigation();

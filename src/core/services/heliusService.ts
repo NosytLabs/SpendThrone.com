@@ -1,6 +1,6 @@
 import type { Commitment } from '@solana/web3.js';
 import { getRpcUrl, isRpcEnabled } from '../../core/constants/endpoints';
-import { apiService } from '../api-service';
+import { apiClient } from './apiClient';
 
 export type HeliusTransactionSummary = {
     signature: string;
@@ -47,7 +47,7 @@ export async function getTransactionsForAddress(
     };
 
     type SignaturesResponse = { result?: Array<{ signature: string; slot: number; blockTime?: number }> };
-    const sigData = await apiService.post<SignaturesResponse, typeof sigPayload>(url, sigPayload);
+    const sigData = await apiClient.post<SignaturesResponse, typeof sigPayload>(url, sigPayload);
     const signatures = sigData.result ?? [];
 
     // If only signatures are requested, return minimal summaries
@@ -98,7 +98,7 @@ export async function getTransactionsForAddress(
 
             try {
                 type TxResponse = { result?: { slot?: number; blockTime?: number; meta?: { err?: unknown; fee?: number } } };
-                const txData = await apiService.post<TxResponse, typeof txPayload>(url, txPayload);
+                const txData = await apiClient.post<TxResponse, typeof txPayload>(url, txPayload);
                 const tx = txData.result;
                 txSummaries[idx] = {
                     signature,

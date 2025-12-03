@@ -1,8 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { RoyalIcon } from '@/components/ui';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Skeleton } from '@/components/ui/Skeleton';
+import { RoyalIcon, Dialog, DialogContent, DialogHeader, DialogTitle, Input, Skeleton } from '@/components/ui';
 
 interface TokenInfo {
     address: string;

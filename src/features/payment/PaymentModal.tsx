@@ -1,9 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
-import { Button, GradientButton, TransactionStatus } from '@/components/ui';
-import { Input } from '@/components/ui/input';
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogHeader, 
+  DialogTitle, 
+  DialogDescription, 
+  DialogFooter,
+  Button, 
+  GradientButton, 
+  TransactionStatus,
+  Input,
+  RoyalIcon 
+} from '@/components/ui';
 import { usePayment } from './usePayment';
-import { RoyalIcon } from '@/components/ui';
 import { formatCurrency, formatAmount } from '@/shared/utils/formatting/currency';
 import { swapService, QuoteResult } from '@/core/services/swapService';
 import { priceService } from '@/core/services/priceService';
@@ -11,7 +20,7 @@ import { TokenSelector } from '@/components/ui/TokenSelector';
 import { debugLog } from '@/shared/utils/logger';
 import { EntranceAnimation, GlowPulse } from '@/components/ui/AnimationUtilities';
 import { useWallet } from '@solana/wallet-adapter-react';
-import { useDegradedMode } from '@/core/hooks/useDegradedMode';
+import { useDegradedMode } from '@/shared/hooks/useDegradedMode';
 
 export interface PaymentModalProps {
     isOpen: boolean;

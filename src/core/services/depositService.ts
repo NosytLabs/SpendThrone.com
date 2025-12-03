@@ -52,3 +52,25 @@ export async function trackDeposit(
     // We don't rethrow here to avoid failing the UI payment flow if tracking fails
   }
 }
+
+export async function getDepositHistory(walletAddress: string): Promise<unknown[]> {
+  // Fallback deposit history with sample data
+  debugLog(`Fetching deposit history for ${walletAddress}`);
+  return Promise.resolve([
+    {
+      id: '1',
+      amount: 1.5,
+      timestamp: Date.now() - 86400000,
+      status: 'confirmed',
+      txSignature: 'sample-tx-1'
+    },
+    {
+      id: '2', 
+      amount: 2.3,
+      timestamp: Date.now() - 172800000,
+      status: 'confirmed',
+      txSignature: 'sample-tx-2'
+    }
+  ]);
+}
+

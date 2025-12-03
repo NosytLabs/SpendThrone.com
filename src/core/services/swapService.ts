@@ -42,7 +42,7 @@ export type DepositRecord = {
   status: string;
 };
 import { priceService } from '@/core/services/priceService';
-import { apiService } from '@/core/api-service';
+import { apiClient } from '@/core/services/apiClient';
 import { getTreasuryAddress } from '@/core/constants/endpoints';
 
 // Use centralized constants for mint addresses
@@ -145,7 +145,7 @@ class SwapService {
         routePlan?: Array<{ swapInfo?: { feeAmount?: number | string; feeMint?: string } }>;
         marketInfos?: unknown[];
       };
-      const quoteData = await apiService.get<JupiterQuoteResponse>(url, { headers });
+      const quoteData = await apiClient.get<JupiterQuoteResponse>(url, { headers });
       
       if (!quoteData || !quoteData.outAmount) {
         throw new Error('No valid quote received from Jupiter');
