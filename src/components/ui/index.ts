@@ -26,7 +26,7 @@ export {
 } from './Card';
 export type { EnhancedCardProps } from './Card';
 export { ErrorBoundary } from './ErrorBoundary';
-export { LoadingOverlay, SkeletonLoader, ProgressLoader } from './LoadingOverlay';
+export { LoadingOverlay } from './LoadingOverlay';
 export { LoadingSpinner } from './LoadingSpinner';
 export { LottieAnimation } from './LottieAnimation';
 export { ScrollToTop } from './ScrollToTop';

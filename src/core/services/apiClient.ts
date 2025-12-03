@@ -1,60 +1,77 @@
-import { withRateLimit } from '../utils/rateLimiter';
+import { logError } from '@/shared/utils/logger';
 
-/**
- * Generic API Client with rate limiting
- */
+interface RequestConfig extends RequestInit {
+  params?: Record<string, string | number | boolean | undefined>;
+}
+
 class ApiClient {
-  private static instance: ApiClient;
+  private baseUrl: string;
 
-  private constructor() {}
+  constructor(baseUrl: string = '') {
+    this.baseUrl = baseUrl;
+  }
 
-  static getInstance(): ApiClient {
-    if (!ApiClient.instance) {
-      ApiClient.instance = new ApiClient();
+  private async request<T>(endpoint: string, config: RequestConfig = {}): Promise<T> {
+    const { params, ...customConfig } = config;
+    let url = endpoint.startsWith('http') ? endpoint : `${this.baseUrl}${endpoint}`;
+
+    if (params) {
+      const searchParams = new URLSearchParams();
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined) {
+          searchParams.append(key, String(value));
+        }
+      });
+      const separator = url.includes('?') ? '&' : '?';
+      url += `${separator}${searchParams.toString()}`;
     }
-    return ApiClient.instance;
+
+    const headers = {
+      'Content-Type': 'application/json',
+      ...(customConfig.headers || {}),
+    };
+
+    try {
+      const response = await fetch(url, {
+        ...customConfig,
+        headers,
+      });
+
+      if (!response.ok) {
+        throw new Error(`API Error: ${response.status} ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      return data as T;
+    } catch (error) {
+      logError(`Request failed: ${url}`, error);
+      throw error;
+    }
   }
 
-  /**
-   * Generic GET request method with rate limiting
-   */
-  async get<T>(url: string, options?: RequestInit): Promise<T> {
-    return withRateLimit(async () => {
-      const response = await fetch(url, {
-        method: 'GET',
-        ...options
-      });
-      
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-      }
-      
-      return response.json();
-    }, `get_${url}`);
+  get<T>(endpoint: string, config?: RequestConfig): Promise<T> {
+    return this.request<T>(endpoint, { ...config, method: 'GET' });
   }
 
-  /**
-   * Generic POST request method with rate limiting
-   */
-  async post<T, B>(url: string, body: B, options?: RequestInit): Promise<T> {
-    return withRateLimit(async () => {
-      const response = await fetch(url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...options?.headers
-        },
-        body: JSON.stringify(body),
-        ...options
-      });
-      
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-      }
-      
-      return response.json();
-    }, `post_${url}`);
+  post<T, D = unknown>(endpoint: string, data?: D, config?: RequestConfig): Promise<T> {
+    return this.request<T>(endpoint, {
+      ...config,
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  put<T, D = unknown>(endpoint: string, data?: D, config?: RequestConfig): Promise<T> {
+    return this.request<T>(endpoint, {
+      ...config,
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
+  }
+
+  delete<T>(endpoint: string, config?: RequestConfig): Promise<T> {
+    return this.request<T>(endpoint, { ...config, method: 'DELETE' });
   }
 }
 
-export const apiClient = ApiClient.getInstance();
+export const apiClient = new ApiClient();

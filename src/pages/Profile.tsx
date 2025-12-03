@@ -5,9 +5,6 @@ import { PageHeader } from '../components/layout/PageHeader';
 import { Section } from '../components/layout/Section';
 import {
   Card,
-  RoyalCard,
-  GlowCard,
-  ShimmerCard,
   Button,
   Badge,
   LoadingSpinner,
@@ -16,34 +13,28 @@ import {
   BounceAnimation,
   RippleEffect,
   ConfettiAnimation,
-  ProgressBar,
   UserPreferencesPanel,
   CopyToClipboard,
   RoyalIcon,
-  LottieAnimation,
   GlowPulse,
   FloatingAnimation,
-  ShimmerEffect
+  GlowCard
 } from '../components/ui';
 import { EditProfileModal } from '../components/ui/EditProfileModal';
 import { useNavigate, useParams } from 'react-router-dom';
 import { formatCurrency } from '@/shared/utils/formatting/currency';
-import { formatDistanceToNow } from 'date-fns';
 import { databaseService } from '@/core/services/databaseService';
 import { swapService } from '@/core/services/swapService';
 import { logError } from '@/shared/utils/logger';
 import { useDegradedMode } from '@/shared/hooks/useDegradedMode';
 
-/**
- * NOTE: This component currently uses a hybrid approach for data.
- * It fetches real data from the leaderboard service and local deposits.
- * Mock data is used as a placeholder for features pending backend implementation:
- * - Achievements
- * - Rank History
- * - Detailed Stats
- */
+import { mockUserData, UserData, Transaction } from '@/core/data/mockProfileData';
 
-import { mockUserData, UserData, Transaction, Achievement, RankHistoryPoint } from '@/core/data/mockProfileData';
+// Sub-components
+import { OverviewTab } from '@/features/profile/components/OverviewTab';
+import { AchievementsTab } from '@/features/profile/components/AchievementsTab';
+import { HistoryTab } from '@/features/profile/components/HistoryTab';
+import { AnalyticsTab } from '@/features/profile/components/AnalyticsTab';
 
 const Profile: React.FC = () => {
   const { walletAddress } = useParams<{ walletAddress: string }>();
@@ -450,235 +441,30 @@ const Profile: React.FC = () => {
         {/* Tab Content */}
         <EntranceAnimation type="fade-in" delay={800}>
           {activeTab === 'overview' && (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              {/* Profile Info */}
-              <RoyalCard className="p-6">
-                <h3 className="royal-text-title text-white mb-4 flex items-center gap-2">
-                  <RoyalIcon variant="user" className="text-accent-primary" />
-                  Profile Information
-                </h3>
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center">
-                    <span className="text-text-secondary">Wallet Address</span>
-                    <div className="flex items-center gap-2">
-                      <span className="text-white font-mono text-sm">
-                        {userData.walletAddress.slice(0, 4)}...{userData.walletAddress.slice(-4)}
-                      </span>
-                      <CopyToClipboard text={userData.walletAddress} />
-                    </div>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-text-secondary">Member Since</span>
-                    <span className="text-white">{new Date(userData.joinedDate).toLocaleDateString()}</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-text-secondary">Last Active</span>
-                    <span className="text-white">
-                      {formatDistanceToNow(new Date(userData.lastActive), { addSuffix: true })}
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-text-secondary">Tier</span>
-                    <GlowPulse>
-                      <Badge className={`${tierColors[userData.tier as keyof typeof tierColors]} text-white shadow-[0_0_10px_rgba(234,179,8,0.3)]`}>
-                        {userData.tier.toUpperCase()}
-                      </Badge>
-                    </GlowPulse>
-                  </div>
-                </div>
-              </RoyalCard>
-
-              {/* Rank Progress */}
-              <RoyalCard className="p-6">
-                <h3 className="royal-text-title text-white mb-4 flex items-center gap-2">
-                  <div className="w-8 h-8 flex items-center justify-center">
-                    <LottieAnimation 
-                      url="https://assets-v2.lottiefiles.com/a/951d99e6-1153-11ee-b225-eb06e4b03b3b/YlEVGN47Y6.json"
-                      width={32}
-                      height={32}
-                    />
-                  </div>
-                  Rank Progress
-                </h3>
-                <div className="space-y-4">
-                  <div>
-                    <div className="flex justify-between text-sm mb-2">
-                      <span className="text-text-secondary">Next Rank Milestone</span>
-                      <span className="text-white">{rankProgress.toFixed(0)}%</span>
-                    </div>
-                    <ShimmerEffect>
-                      <ProgressBar 
-                        value={rankProgress}
-                        className="h-3 shadow-inner"
-                        color="gold"
-                      />
-                    </ShimmerEffect>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4 text-center">
-                    <div className="bg-background-secondary/50 p-3 rounded-lg">
-                      <div className="text-lg font-bold text-white">{userData.stats.longestStreak}</div>
-                      <div className="text-xs text-text-secondary">Best Streak</div>
-                    </div>
-                    <div className="bg-background-secondary/50 p-3 rounded-lg">
-                      <div className="text-lg font-bold text-white">{userData.stats.totalDaysActive}</div>
-                      <div className="text-xs text-text-secondary">Days Active</div>
-                    </div>
-                  </div>
-                </div>
-              </RoyalCard>
-            </div>
+            <OverviewTab 
+              userData={userData} 
+              tierColors={tierColors} 
+              rankProgress={rankProgress} 
+            />
           )}
 
           {activeTab === 'achievements' && (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {userData.achievements.map((achievement: Achievement, index: number) => (
-                <EntranceAnimation key={achievement.id} type="scale" delay={index * 100}>
-                  <ShimmerCard 
-                    shimmerOnHover={true}
-                    className={`p-6 text-center ${achievement.rarity === 'legendary' ? 'border-2 border-accent-primary' : ''}`}
-                  >
-                    <BounceAnimation intensity="subtle" trigger="hover">
-                    <RoyalIcon 
-                      variant={achievement.icon} 
-                      size={48} 
-                      className={`mx-auto mb-3 ${tierColors[achievement.rarity as keyof typeof tierColors].replace('bg-', 'text-')} filter drop-shadow-[0_0_10px_${
-                        achievement.rarity === 'common' ? 'rgba(107,114,128,0.5)' :
-                        achievement.rarity === 'rare' ? 'rgba(59,130,246,0.5)' :
-                        achievement.rarity === 'epic' ? 'rgba(168,85,247,0.5)' :
-                        'rgba(234,179,8,0.5)'
-                      }]`} 
-                    />
-                  </BounceAnimation>
-                  <h4 className="text-lg font-bold text-white mb-2">{achievement.name}</h4>
-                  <p className="text-sm text-text-secondary mb-3">{achievement.description}</p>
-                  <div className="text-xs text-text-muted">
-                    Unlocked {formatDistanceToNow(new Date(achievement.unlockedAt), { addSuffix: true })}
-                  </div>
-                  <Badge className={`mt-3 ${tierColors[achievement.rarity as keyof typeof tierColors]} text-white text-xs`}>
-                    {achievement.rarity.toUpperCase()}
-                  </Badge>
-                </ShimmerCard>
-              </EntranceAnimation>
-            ))}
-          </div>
-        )}
+            <AchievementsTab 
+              achievements={userData.achievements} 
+              tierColors={tierColors} 
+            />
+          )}
 
-        {activeTab === 'history' && (
-          <RoyalCard className="p-6">
-            <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-              <RoyalIcon variant="history" className="text-accent-primary" />
-              Recent Transactions
-            </h3>
-            <div className="space-y-4">
-              {userData.recentTransactions.map((tx: Transaction, index: number) => (
-                <EntranceAnimation key={tx.id} type="slide-up" delay={index * 50}>
-                  <div className="flex items-center justify-between p-4 bg-background-secondary/30 rounded-lg border border-border-primary hover:border-accent-primary/50 transition-colors">
-                    <div className="flex items-center gap-4">
-                      <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                        tx.type === 'tribute' ? 'bg-accent-primary/20' : 'bg-accent-secondary/20'
-                      }`}>
-                        <RoyalIcon 
-                          variant={tx.type === 'tribute' ? 'arrowUp' : 'arrowDown'} 
-                          className={tx.type === 'tribute' ? 'text-accent-primary' : 'text-accent-secondary'} 
-                        />
-                      </div>
-                        <div>
-                          <div className="font-medium text-white">
-                            {tx.type === 'tribute' ? 'Tribute Paid' : 'Other'}
-                          </div>
-                          <div className="text-sm text-text-secondary">
-                            {formatDistanceToNow(new Date(tx.timestamp), { addSuffix: true })}
-                          </div>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <div className="font-bold text-white">{formatCurrency(tx.amount)}</div>
-                        <div className="text-sm text-text-secondary">{tx.currency}</div>
-                        {tx.rankChange !== 0 && (
-                          <Badge className={`mt-1 text-xs ${
-                            tx.rankChange > 0 ? 'bg-green-500' : 'bg-red-500'
-                          } text-white`}>
-                            {tx.rankChange > 0 ? '+' : ''}{tx.rankChange} rank
-                          </Badge>
-                        )}
-                      </div>
-                    </div>
-                  </EntranceAnimation>
-                ))}
-              </div>
-            </RoyalCard>
+          {activeTab === 'history' && (
+            <HistoryTab 
+              transactions={userData.recentTransactions} 
+            />
           )}
 
           {activeTab === 'analytics' && (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Contribution Trend */}
-              <RoyalCard className="p-6">
-                <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-                  <RoyalIcon variant="trend" className="text-accent-secondary" />
-                  Contribution Trend
-                </h3>
-                <div className="space-y-3">
-                  {userData.stats.rankHistory.slice(-6).map((data: RankHistoryPoint, index: number) => {
-                    // Calculate previous rank for trend comparison
-                    // If index > 0, compare with previous item in this slice
-                    // If index === 0, try to find the item before it in the full array
-                    const fullHistory = userData.stats.rankHistory;
-                    const sliceStartIndex = Math.max(0, fullHistory.length - 6);
-                    const currentItemIndex = sliceStartIndex + index;
-                    const prevItemIndex = currentItemIndex - 1;
-                    
-                    let trend: 'up' | 'down' | 'same' = 'same';
-                    if (prevItemIndex >= 0) {
-                      const prevRank = fullHistory[prevItemIndex].rank;
-                      if (data.rank < prevRank) trend = 'up'; // Lower rank number is better (1 is best)
-                      else if (data.rank > prevRank) trend = 'down';
-                    }
-
-                    return (
-                      <div key={index} className="flex items-center justify-between">
-                        <span className="text-text-secondary">{data.date}</span>
-                        <div className="flex items-center gap-2">
-                          <span className="text-white font-medium">#{data.rank}</span>
-                          {prevItemIndex >= 0 && trend !== 'same' && (
-                            <RoyalIcon 
-                              variant={trend === 'up' ? 'trend' : 'trendDown'}
-                              size={16}
-                              className={trend === 'up' ? 'text-green-500' : 'text-red-500'}
-                            />
-                          )}
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </RoyalCard>
-
-              {/* Statistics */}
-              <RoyalCard className="p-6">
-                <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-                  <RoyalIcon variant="pieChart" className="text-success" />
-                  Statistics
-                </h3>
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center">
-                    <span className="text-text-secondary">Average Contribution</span>
-                    <span className="text-white font-medium">{formatCurrency(userData.stats.averageContribution)}</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-text-secondary">Largest Contribution</span>
-                    <span className="text-white font-medium">{formatCurrency(userData.stats.largestContribution)}</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-text-secondary">Total Transactions</span>
-                    <span className="text-white font-medium">{userData.totalTransactions}</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-text-secondary">Success Rate</span>
-                    <span className="text-white font-medium">100%</span>
-                  </div>
-                </div>
-              </RoyalCard>
-            </div>
+            <AnalyticsTab 
+              userData={userData} 
+            />
           )}
         </EntranceAnimation>
 
