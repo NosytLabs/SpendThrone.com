@@ -1,8 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { startIntervalWhenVisible } from '@/shared/utils/visibility';
-import { useWallet } from '@solana/wallet-adapter-react';
-import { getTierFromAmount } from '../utils/tierSystem';
-// import { swapService } from '../utils/swapService'; // Not currently used
+import { useWallet, useConnection } from '@solana/wallet-adapter-react';
+import { LAMPORTS_PER_SOL } from '@solana/web3.js';
 import { UserStats, DepositHistoryItem, PremiumFeaturesData } from '../utils/types';
 import { statsService } from '@/core/services/statsService';
 import { getDepositHistory } from '@/core/services/depositService';
@@ -10,7 +9,7 @@ import { logError } from '../utils/logger';
 
 export const useSettings = () => {
     const { connected, publicKey } = useWallet();
-    // const wallet = useWallet(); // Temporarily commented out - not currently used
+    const { connection } = useConnection();
     const [displayName, setDisplayName] = useState<string>('');
     const [userStats, setUserStats] = useState<UserStats>({
         totalDeposits: 0,
@@ -42,34 +41,13 @@ export const useSettings = () => {
         
         try {
             const walletAddress = publicKey.toString();
-            // Mock data for deposits since methods don't exist
-            type DepositLite = { usdValue?: number; walletAddress?: string };
-            const userDeposits: DepositLite[] = [];
-            const allDeposits: DepositLite[] = [];
-            const userDepositData: DepositLite[] = userDeposits || [];
-            const totalDeposits = userDepositData.length;
-            const totalUsdValue = userDepositData.reduce((sum: number, deposit: DepositLite) => sum + (deposit.usdValue || 0), 0);
-
-            const allUsers: DepositLite[] = [...userDeposits, ...allDeposits];
-            const userTotals: Record<string, number> = {};
-            
-            allUsers.forEach((deposit: DepositLite) => {
-                if (deposit.walletAddress) {
-                  if (!userTotals[deposit.walletAddress]) {
-                      userTotals[deposit.walletAddress] = 0;
-                  }
-                  userTotals[deposit.walletAddress] += deposit.usdValue || 0;
-                }
-            });
-
-            const sortedUsers = Object.entries(userTotals).sort(([,a], [,b]) => (b as number) - (a as number));
-            const userRank = sortedUsers.findIndex(([wallet]) => wallet === walletAddress) + 1;
+            const stats = await statsService.getUserStats(walletAddress);
             
             setUserStats({
-                totalDeposits,
-                totalUsdValue: Math.round(totalUsdValue),
-                rank: userRank > 0 ? userRank : null,
-                tier: getTierFromAmount(totalUsdValue).name
+                totalDeposits: stats.totalDeposits || 0,
+                totalUsdValue: stats.totalUsdValue || 0,
+                rank: stats.globalRank || null,
+                tier: stats.tier || 'Degen Peasant'
             });
         } catch (error) {
             logError('Error loading user stats:', error);
@@ -77,42 +55,22 @@ export const useSettings = () => {
     }, [publicKey]);
 
     const loadWalletBalance = useCallback(async () => {
-        if (!publicKey) return;
+        if (!publicKey || !connection) return;
         
         try {
-            // const balance = await apiService.getWalletBalance(publicKey.toString()); // Method doesn't exist
-            // setWalletBalance(balance); // Temporarily commented out - method doesn't exist
+            const balance = await connection.getBalance(publicKey);
+            setWalletBalance(balance / LAMPORTS_PER_SOL);
         } catch (error) {
             logError('Error loading wallet balance:', error);
             setWalletBalance(null);
         }
-    }, [publicKey]);
+    }, [publicKey, connection]);
 
     const loadTokenBalances = useCallback(async () => {
-        if (!publicKey) return;
-        
-        try {
-            const tokens = ['USDC', 'RAY', 'BONK', 'WIF', 'JUP'];
-            const balances: Record<string, number> = {};
-            
-            for (const token of tokens) {
-                try {
-                    // const balance = await apiService.getWalletBalance(publicKey.toString()); // Method doesn't exist
-                    // Mock balance value since getWalletBalance doesn't exist
-                    const mockBalance = Math.random() * 100; // Placeholder
-                    if (mockBalance > 0) {
-                        balances[token] = mockBalance;
-                    }
-                } catch (err) {
-                    logError(`Error loading ${token} balance:`, err);
-                }
-            }
-            
-            setTokenBalances(balances);
-        } catch (error) {
-            logError('Error loading token balances:', error);
-        }
-    }, [publicKey]);
+        // Token balance loading temporarily disabled to reduce RPC load
+        // Can be implemented using connection.getParsedTokenAccountsByOwner
+        setTokenBalances({});
+    }, []);
 
     const startRealTimeUpdates = useCallback(() => {
         const REFRESH_MS = import.meta.env.DEV ? 30000 : 60000;
@@ -145,18 +103,24 @@ export const useSettings = () => {
 
         try {
             const walletAddress = publicKey.toBase58();
-            const [userData, historyData] = await Promise.all([
+            const [settingsData, historyData] = await Promise.all([
                 statsService.getSettings(walletAddress),
                 getDepositHistory(walletAddress),
-                // apiService.getWalletBalance(walletAddress), // Method doesn't exist - using placeholder
-                // apiService.getTokenBalances(walletAddress), // Temporarily commented out - method doesn't exist
             ]);
 
-            setDisplayName(userData.displayName as string);
-            setUserStats(userData.userStats as UserStats);
+            if (settingsData.displayName) {
+                setDisplayName(settingsData.displayName as string);
+            }
+            
+            if (settingsData.userStats) {
+                 setUserStats(settingsData.userStats as UserStats);
+            } else {
+                // If getSettings didn't return stats, try loading them explicitly
+                await loadUserStats();
+            }
+
             setDepositHistory(historyData as DepositHistoryItem[]);
-            // setWalletBalance(balanceData?.balance); // Temporarily commented out - method doesn't exist
-            // setTokenBalances(tokensData); // Temporarily commented out - method doesn't exist
+            await loadWalletBalance();
 
         } catch (err) {
             const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred';
@@ -165,7 +129,7 @@ export const useSettings = () => {
         } finally {
             setLoading(false);
         }
-    }, [publicKey]);
+    }, [publicKey, loadUserStats, loadWalletBalance]);
 
     useEffect(() => {
         if (connected && publicKey) {

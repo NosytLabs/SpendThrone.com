@@ -1,21 +1,13 @@
-// import { apiClient } from './apiClient';
 import { debugLog } from '@/shared/utils/logger';
+import { databaseService } from '@/core/services/databaseService';
+import { getTierByUsd } from '@/shared/utils/tierSystem';
+import { LeaderboardEntry } from '@/shared/utils/types';
 
 export interface MarketData {
   totalValue: number;
   totalUsers: number;
   totalTransactions: number;
   averageDeposit: number;
-}
-
-export interface LeaderboardEntry {
-  walletAddress: string;
-  totalUsdValue: number;
-  displayName: string;
-  rank: number;
-  tier: string;
-  transactionCount: number;
-  timeAgo: string;
 }
 
 export interface UserStatsResponse {
@@ -26,6 +18,8 @@ export interface UserStatsResponse {
   currentTier?: string;
   tier?: string;
   rank?: number;
+  totalDeposits?: number;
+  totalUsdValue?: number;
 }
 
 class StatsService {
@@ -44,15 +38,27 @@ class StatsService {
    * Get market data for home page
    */
   async getMarketData(): Promise<MarketData> {
-    // TODO: Replace with real API call
-    // const response = await apiClient.get<MarketData>('/api/market/stats');
-    
-    return Promise.resolve({
+    try {
+      if (databaseService.isAvailable()) {
+        const stats = await databaseService.getLeaderboardStats();
+        return {
+          totalValue: stats.totalVolume,
+          totalUsers: stats.totalUsers,
+          totalTransactions: 0, // Not currently tracked in aggregate
+          averageDeposit: stats.averageDeposit,
+        };
+      }
+    } catch (error) {
+      debugLog('Failed to fetch market data from database', error);
+    }
+
+    // Fallback mock data
+    return {
       totalValue: 123456789,
       totalUsers: 9876,
       totalTransactions: 1234567,
       averageDeposit: 1234.56,
-    });
+    };
   }
 
   /**
@@ -60,17 +66,18 @@ class StatsService {
    */
   async getLeaderboard(): Promise<LeaderboardEntry[]> {
     try {
-      // Try to get real leaderboard data from backend API
-      // const response = await apiClient.get<LeaderboardEntry[]>('/api/leaderboard');
-      // return response || [];
-      throw new Error('Not implemented');
+      if (databaseService.isAvailable()) {
+        return await databaseService.getLeaderboard();
+      }
     } catch (error) {
-      debugLog('Failed to fetch leaderboard, using fallback mock');
-      return [
-        { walletAddress: '8x2...9s8d', totalUsdValue: 5000, displayName: 'WhaleKing', rank: 1, tier: 'Diamond Emperor', transactionCount: 12, timeAgo: '2h ago' },
-        { walletAddress: '3j1...k92s', totalUsdValue: 1200, displayName: 'SolDegen', rank: 2, tier: 'Gold King', transactionCount: 5, timeAgo: '5h ago' }
-      ];
+      debugLog('Failed to fetch leaderboard from database', error);
     }
+
+    // Fallback mock data
+    return [
+      { walletAddress: '8x2...9s8d', totalUsdValue: 5000, displayName: 'WhaleKing', rank: 1, tier: 'Diamond Emperor', transactionCount: 12, timeAgo: '2h ago' },
+      { walletAddress: '3j1...k92s', totalUsdValue: 1200, displayName: 'SolDegen', rank: 2, tier: 'Gold King', transactionCount: 5, timeAgo: '5h ago' }
+    ];
   }
 
   /**
@@ -78,18 +85,32 @@ class StatsService {
    */
   async getUserStats(walletAddress: string): Promise<UserStatsResponse> {
     try {
-      debugLog(`Fetching user stats for ${walletAddress}`);
-      
-      // Try to get real user stats from backend API
-      // const response = await apiClient.get<UserStatsResponse>(`/api/user/${walletAddress}/stats`);
-      
-      // if (response) return response;
-      throw new Error('Not implemented');
+      if (databaseService.isAvailable()) {
+        const entry = await databaseService.getUserLeaderboardEntry(walletAddress);
+        if (entry) {
+          const tier = getTierByUsd(entry.total_usd_value);
+          // We need to find rank. getLeaderboard gets top 50. 
+          // For now, if they are not in top 50, rank is unknown (or we need a separate query for rank).
+          // databaseService.getUserLeaderboardEntry returns raw record, not rank.
+          
+          return {
+            totalBalance: 0, // Wallet balance not tracked in DB
+            totalEarned: 0,
+            activeStakes: 0,
+            globalRank: 0, // TODO: Implement getRankForUser in databaseService
+            currentTier: tier,
+            tier: tier,
+            rank: 0,
+            totalDeposits: entry.transaction_count,
+            totalUsdValue: entry.total_usd_value
+          };
+        }
+      }
     } catch (error) {
-      debugLog(`Failed to fetch user stats for ${walletAddress}, using fallback`);
+      debugLog(`Failed to fetch user stats for ${walletAddress}`, error);
     }
 
-    // Fallback to mock data if API fails
+    // Fallback to mock data
     return {
       totalBalance: 0,
       totalEarned: 0,
@@ -98,6 +119,8 @@ class StatsService {
       currentTier: 'Bronze',
       tier: 'Bronze',
       rank: 0,
+      totalDeposits: 0,
+      totalUsdValue: 0
     };
   }
 
@@ -118,20 +141,29 @@ class StatsService {
   }
 
   /**
-   * Get user settings
+   * Get user settings (and stats for useSettings hook)
    */
   async getSettings(walletAddress: string): Promise<Record<string, unknown>> {
     try {
-      debugLog(`Fetching settings for ${walletAddress}`);
-      
-      // Try to get real user settings from backend API
-      // const response = await apiClient.get<Record<string, unknown>>(`/api/user/${walletAddress}/settings`);
-      // return response || {};
-      return {};
+      if (databaseService.isAvailable()) {
+        const entry = await databaseService.getUserLeaderboardEntry(walletAddress);
+        if (entry) {
+          const tier = getTierByUsd(entry.total_usd_value);
+          return {
+            displayName: entry.display_name,
+            userStats: {
+              totalDeposits: entry.transaction_count,
+              totalUsdValue: entry.total_usd_value,
+              rank: null, // We don't have rank in single entry fetch
+              tier: tier
+            }
+          };
+        }
+      }
     } catch (error) {
-      debugLog(`Failed to fetch settings for ${walletAddress}, returning empty object`);
-      return {};
+      debugLog(`Failed to fetch settings for ${walletAddress}`, error);
     }
+    return {};
   }
 
   async getTiers(): Promise<unknown[]> {
