@@ -100,10 +100,3 @@ GRANT SELECT ON public.leaderboard TO anon;
 GRANT SELECT ON public.leaderboard TO authenticated;
 GRANT INSERT ON public.leaderboard TO authenticated;
 GRANT UPDATE ON public.leaderboard TO authenticated;
-
--- Add some sample data for testing (optional - remove in production)
--- INSERT INTO public.leaderboard (wallet_address, display_name, total_usd_value, transaction_count, message, link)
--- VALUES 
---     ('31M5mtQ2T1B4K9rPieLoiTncDUGWVwgBdiJYm8RhsJCo', 'KingSolana', 5420.50, 15, 'Long live the King! 👑', 'https://twitter.com/solana'),
---     ('7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU', 'CryptoWhale', 3890.25, 23, 'Catch me if you can 🚀', 'https://spendthrone.com'),
---     ('GdNBHNfG6HgjhE4a1uKvT5sVx8RWN8H8fVJH8sWkPg6C', 'DeFiKnight', 2150.75, 8, 'For the realm!', 'https://github.com/solana-labs');
