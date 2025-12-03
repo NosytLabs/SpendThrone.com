@@ -1,5 +1,7 @@
 import React from 'react';
-import { Button, Input, RoyalIcon } from '@/components/ui';
+import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/ui/Input';
+import { RoyalIcon } from '@/components/ui/RoyalIcon';
 import { formatCurrency } from '@/shared/utils/formatting/currency';
 
 interface PaymentFormProps {
