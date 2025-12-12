@@ -55,6 +55,17 @@
   --theme-text-primary: #ffffff;
   --theme-text-secondary: #d1d5db;
   --theme-text-muted: #9ca3af;
+
+  /* Royal Polish Palette */
+  --royal-purple: #6B46C1;
+  --royal-gold: #F59E0B;
+  --royal-crimson: #DC2626;
+  --royal-silver: #E5E7EB;
+  --royal-emerald: #059669;
+  
+  /* Gradient backgrounds */
+  --royal-gradient: linear-gradient(135deg, var(--royal-purple), var(--royal-gold));
+  --royal-glow: radial-gradient(circle, var(--royal-gold), transparent);
 }
 
 /* Global Styles for the Revamp */
@@ -88,19 +99,33 @@ h1, h2, h3, h4, h5, h6 {
   text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
 }
 
-/* Scrollbar */
+/* Scrollbar - Royal Edition */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 10px;
+  height: 10px;
 }
+
 ::-webkit-scrollbar-track {
-  background: var(--color-bg-deep);
+  background: #0a0510; /* Darker than bg-deep for contrast */
+  border-left: 1px solid rgba(255, 215, 0, 0.05);
 }
+
 ::-webkit-scrollbar-thumb {
-  background: var(--color-purple-900);
-  border-radius: 4px;
+  background: linear-gradient(180deg, var(--color-gold-700), var(--color-gold-600));
+  border-radius: 5px;
+  border: 2px solid #0a0510; /* Creates padding effect */
+  box-shadow: inset 0 0 4px rgba(0,0,0,0.5);
 }
+
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-purple-700);
+  background: linear-gradient(180deg, var(--color-gold-500), var(--color-gold-400));
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.3), inset 0 0 4px rgba(0,0,0,0.5);
+}
+
+/* Firefox support */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-gold-700) #0a0510;
 }
 
 /* Animation Utilities */

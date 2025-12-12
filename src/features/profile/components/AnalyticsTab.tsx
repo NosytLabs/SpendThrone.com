@@ -75,6 +75,15 @@ export const AnalyticsTab: React.FC<AnalyticsTabProps> = ({ userData }) => {
             <span className="text-text-secondary">Success Rate</span>
             <span className="text-white font-medium">100%</span>
           </div>
+          <div className="flex justify-between items-center group relative">
+            <div className="flex items-center gap-1 cursor-help" title="Measures the conspicuousness of your consumption relative to the average. Based on Thorstein Veblen's theory of Conspicuous Consumption.">
+                <span className="text-text-secondary border-b border-dashed border-text-secondary/50">Veblen Score</span>
+                <RoyalIcon variant="info" size={14} className="text-text-muted" />
+            </div>
+            <span className="text-accent-primary font-bold">
+                {((userData.stats.largestContribution / (userData.stats.averageContribution || 1)) * 5).toFixed(1)}
+            </span>
+          </div>
         </div>
       </RoyalCard>
     </div>

@@ -51,9 +51,9 @@ export const Card: React.FC<CardProps> = ({
       interactive && 'border-accent-primary/50 cursor-pointer focus:ring-accent-primary/50'
     ),
     glass: cn(
-      'glass-panel transition-all duration-300',
+      'glass-panel royal-glass transition-all duration-300',
       hover && 'hover:border-accent-primary/40 hover:shadow-lg hover:shadow-accent-primary/10',
-      interactive && 'cursor-pointer hover:border-accent-primary/40 hover:shadow-lg hover:shadow-accent-primary/10 focus:ring-accent-primary/50'
+      interactive && 'cursor-pointer hover:border-accent-primary/40 hover:shadow-lg hover:shadow-accent-primary/10 focus:ring-accent-primary/50 royal-border-glow'
     )
   };
 
@@ -86,68 +86,6 @@ export const Card: React.FC<CardProps> = ({
   );
 };
 
-// Card header component
-export interface CardHeaderProps {
-  children: React.ReactNode;
-  className?: string;
-  bordered?: boolean;
-  'aria-label'?: string;
-}
-
-export const CardHeader: React.FC<CardHeaderProps> = ({
-  children,
-  className,
-  bordered = false,
-  'aria-label': ariaLabel
-}) => {
-  return (
-    <header
-      className={cn(
-        'flex items-center justify-between',
-        bordered && 'border-b border-border pb-4 mb-4',
-        className
-      )}
-      aria-label={ariaLabel}
-    >
-      {children}
-    </header>
-  );
-};
-
-// Card title component
-export interface CardTitleProps {
-  children: React.ReactNode;
-  className?: string;
-  size?: 'sm' | 'md' | 'lg';
-  id?: string;
-}
-
-export const CardTitle: React.FC<CardTitleProps> = ({
-  children,
-  className,
-  size = 'md',
-  id
-}) => {
-  const sizeClasses = {
-    sm: 'text-lg',
-    md: 'text-xl',
-    lg: 'text-2xl'
-  };
-
-  return (
-    <h3
-      id={id}
-      className={cn(
-        'font-semibold text-text font-bold',
-        sizeClasses[size],
-        className
-      )}
-    >
-      {children}
-    </h3>
-  );
-};
-
 // Card content component
 export interface CardContentProps {
   children: React.ReactNode;
@@ -170,37 +108,7 @@ export const CardContent: React.FC<CardContentProps> = ({
   );
 };
 
-// Card footer component
-export interface CardFooterProps {
-  children: React.ReactNode;
-  className?: string;
-  bordered?: boolean;
-  'aria-label'?: string;
-}
-
-export const CardFooter: React.FC<CardFooterProps> = ({
-  children,
-  className,
-  bordered = false,
-  'aria-label': ariaLabel
-}) => {
-  return (
-    <div
-      className={cn(
-        'flex items-center justify-between',
-        bordered && 'border-t border-border pt-4 mt-4',
-        className
-      )}
-      aria-label={ariaLabel}
-    >
-      {children}
-    </div>
-  );
-};
-
-/* -------------------------------------------------------------------------- */
-/*                           Enhanced Card Variants                           */
-/* -------------------------------------------------------------------------- */
+// Card content component
 
 export interface EnhancedCardProps extends CardProps {
   // Animation options
@@ -318,18 +226,6 @@ export const EnhancedCard: React.FC<EnhancedCardProps> = ({
 };
 
 // Pre-configured enhanced card variants
-export const AnimatedCard: React.FC<EnhancedCardProps> = (props) => (
-  <EnhancedCard entrance="fade-in" {...props} />
-);
-
-export const InteractiveCard: React.FC<Omit<EnhancedCardProps, 'interactive' | 'hoverScale' | 'rippleOnClick'>> = (props) => (
-  <EnhancedCard 
-    interactive={true} 
-    hoverScale={true} 
-    rippleOnClick={true} 
-    {...props} 
-  />
-);
 
 export const GlowCard: React.FC<EnhancedCardProps> = (props) => (
   <EnhancedCard 

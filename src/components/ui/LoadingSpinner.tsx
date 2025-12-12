@@ -1,7 +1,7 @@
 import React from 'react';
 import { cn } from '@/shared/utils/utils';
-import { LottieAnimation } from './LottieAnimation';
-import { animations } from '@/assets/animations';
+import { RoyalIcon } from './RoyalIcon';
+import { GlowPulse } from './AnimationUtilities';
 
 export interface LoadingSpinnerProps {
   size?: 'sm' | 'md' | 'lg' | 'xl' | number;
@@ -9,13 +9,10 @@ export interface LoadingSpinnerProps {
   color?: 'primary' | 'secondary' | 'white' | 'solana-purple' | 'solana-green' | 'solana-blue';
   thickness?: 'thin' | 'normal' | 'thick';
   speed?: 'slow' | 'normal' | 'fast';
-  variant?: 'spinner' | 'lottie' | 'dots' | 'bars' | 'pulse' | 'wave';
+  variant?: 'spinner' | 'crown' | 'dots' | 'bars' | 'pulse' | 'wave';
   message?: string;
   showMessage?: boolean;
   ariaLabel?: string;
-  overlay?: boolean;
-  overlayOpacity?: 'light' | 'medium' | 'dark' | number;
-  zIndex?: number;
 }
 
 export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
@@ -28,9 +25,7 @@ export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
   message = 'Loading...',
   showMessage = false,
   ariaLabel = 'Loading',
-  overlay = false,
-  overlayOpacity = 'medium',
-  zIndex = 50
+  // zIndex was unused after removing overlay
 }) => {
   const sizeClasses = {
     sm: 'h-4 w-4',
@@ -60,31 +55,6 @@ export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
     fast: 'animate-spin-fast'
   };
 
-  const overlayOpacityClasses = {
-    light: 'bg-black bg-opacity-25',
-    medium: 'bg-black bg-opacity-50',
-    dark: 'bg-black bg-opacity-75'
-  };
-
-  const getOverlayOpacity = () => {
-    if (typeof overlayOpacity === 'number') {
-      return `bg-black bg-opacity-${Math.round(overlayOpacity * 100)}`;
-    }
-    return overlayOpacityClasses[overlayOpacity];
-  };
-
-  // Handle numeric size for Lottie variant (backward compatibility with SolanaLoadingSpinner)
-  const getLottieSize = () => {
-    if (typeof size === 'number') return size;
-    const sizeMap = {
-      sm: 32,
-      md: 48,
-      lg: 64,
-      xl: 96
-    };
-    return sizeMap[size] || 48;
-  };
-
   // Handle numeric size for CSS spinner variant
   const getSpinnerSize = () => {
     if (typeof size === 'number') {
@@ -98,25 +68,30 @@ export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
 
   // Create the spinner content based on variant
   const renderSpinner = () => {
-    if (variant === 'lottie') {
-      const lottieSize = getLottieSize();
+    if (variant === 'crown') {
+      const crownSize = typeof size === 'number' ? size : 
+        size === 'sm' ? 24 : 
+        size === 'md' ? 32 : 
+        size === 'lg' ? 48 : 64;
+        
       return (
         <div
-          className={cn('flex flex-col items-center justify-center', !overlay && className)}
+          className={cn('flex flex-col items-center justify-center', className)}
           role="status"
           aria-live="polite"
           aria-label={ariaLabel}
           aria-busy="true"
         >
-          <LottieAnimation
-              animationData={animations.solanaLoading.data}
-              width={lottieSize}
-              height={lottieSize}
-              loop={true}
-              autoplay={true}
-            />
+          <GlowPulse color="gold" intensity="medium" duration={1500}>
+             <div className="relative animate-bounce">
+                <RoyalIcon variant="crown" size={crownSize} className="text-accent-primary filter drop-shadow-[0_0_8px_rgba(234,179,8,0.6)]" />
+                <div className="absolute inset-0 animate-ping opacity-30">
+                    <RoyalIcon variant="crown" size={crownSize} className="text-accent-primary" />
+                </div>
+             </div>
+          </GlowPulse>
           {showMessage && message && (
-            <p className="mt-4 text-sm text-text-secondary">
+            <p className="mt-4 text-sm text-text-secondary font-cinzel animate-pulse">
               {message}
             </p>
           )}
@@ -130,7 +105,7 @@ export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
     if (variant === 'dots') {
       return (
         <div
-          className={cn('flex space-x-1', !overlay && className)}
+          className={cn('flex space-x-1', className)}
           role="status"
           aria-label={ariaLabel}
           aria-busy="true"
@@ -158,7 +133,7 @@ export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
     if (variant === 'bars') {
       return (
         <div
-          className={cn('flex space-x-1', !overlay && className)}
+          className={cn('flex space-x-1', className)}
           role="status"
           aria-label={ariaLabel}
           aria-busy="true"
@@ -192,7 +167,7 @@ export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
             'rounded-full animate-pulse',
             typeof size === 'string' && sizeClasses[size],
             colorClasses[color].replace('border-', 'bg-'),
-            !overlay && className
+            className
           )}
           style={spinnerSize}
           role="status"
@@ -207,7 +182,7 @@ export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
     if (variant === 'wave') {
       return (
         <div
-          className={cn('flex', !overlay && className)}
+          className={cn('flex', className)}
           role="status"
           aria-label={ariaLabel}
           aria-busy="true"
@@ -245,7 +220,7 @@ export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
           thicknessClasses[thickness],
           speedClasses[speed],
           'rounded-full',
-          !overlay && className
+          className
         )}
         style={spinnerSize}
         role="status"
@@ -256,25 +231,6 @@ export const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
       </div>
     );
   };
-
-  // If overlay mode, wrap in overlay container
-  if (overlay) {
-    return (
-      <div 
-        className={cn(
-          'fixed inset-0 flex items-center justify-center',
-          getOverlayOpacity(),
-          className
-        )}
-        style={{ zIndex }}
-        role="dialog"
-        aria-modal="true"
-        aria-label={ariaLabel || 'Loading overlay'}
-      >
-        {renderSpinner()}
-      </div>
-    );
-  }
 
   // Return standalone spinner
   return renderSpinner();

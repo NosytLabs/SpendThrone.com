@@ -2,6 +2,15 @@ import { debugLog } from '@/shared/utils/logger';
 import { databaseService } from '@/core/services/databaseService';
 import { getTierByUsd } from '@/shared/utils/tierSystem';
 import { LeaderboardEntry } from '@/shared/utils/types';
+import { generateMockLeaderboard } from '@/core/data/mockLeaderboardData';
+
+// Generate mock market data locally since we removed the duplicate file
+const MOCK_MARKET_DATA = {
+  totalValue: 12450982,
+  totalUsers: 8942,
+  totalTransactions: 45231,
+  averageDeposit: 1392.45,
+};
 
 export interface MarketData {
   totalValue: number;
@@ -20,6 +29,10 @@ export interface UserStatsResponse {
   rank?: number;
   totalDeposits?: number;
   totalUsdValue?: number;
+  message?: string;
+  link?: string;
+  customLinks?: { label: string; url: string }[];
+  customSections?: { title: string; content: string }[];
 }
 
 class StatsService {
@@ -53,12 +66,7 @@ class StatsService {
     }
 
     // Fallback mock data
-    return {
-      totalValue: 123456789,
-      totalUsers: 9876,
-      totalTransactions: 1234567,
-      averageDeposit: 1234.56,
-    };
+    return MOCK_MARKET_DATA;
   }
 
   /**
@@ -74,10 +82,19 @@ class StatsService {
     }
 
     // Fallback mock data
-    return [
-      { walletAddress: '8x2...9s8d', totalUsdValue: 5000, displayName: 'WhaleKing', rank: 1, tier: 'Diamond Emperor', transactionCount: 12, timeAgo: '2h ago' },
-      { walletAddress: '3j1...k92s', totalUsdValue: 1200, displayName: 'SolDegen', rank: 2, tier: 'Gold King', transactionCount: 5, timeAgo: '5h ago' }
-    ];
+    return generateMockLeaderboard(50);
+  }
+
+  /**
+   * Get the current #1 Emperor
+   */
+  async getTopEmperor(): Promise<LeaderboardEntry | null> {
+    try {
+      const leaderboard = await this.getLeaderboard();
+      return leaderboard.length > 0 ? leaderboard[0] : null;
+    } catch (error) {
+      return null;
+    }
   }
 
   /**
@@ -100,7 +117,11 @@ class StatsService {
             tier: tier,
             rank: rank,
             totalDeposits: entry.transaction_count,
-            totalUsdValue: entry.total_usd_value
+            totalUsdValue: entry.total_usd_value,
+            message: entry.message || undefined,
+            link: entry.link || undefined,
+            customLinks: entry.custom_links,
+            customSections: entry.custom_sections
           };
         }
       }
@@ -128,13 +149,23 @@ class StatsService {
   async getReferralStats(publicKey: string): Promise<Record<string, number>> {
     debugLog(`Fetching referrals for ${publicKey}`);
     
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 500));
-    
+    try {
+      if (databaseService.isAvailable()) {
+        const { count, volume } = await databaseService.getReferralStats(publicKey);
+        return {
+          referralCount: count,
+          totalReferralVolume: volume,
+          earnings: 0 // "Divine Favor" only, no earnings for now
+        };
+      }
+    } catch (error) {
+      debugLog(`Failed to fetch referral stats for ${publicKey}`, error);
+    }
+
     return {
-      referralCount: Math.floor(Math.random() * 5),
-      totalReferralVolume: Math.floor(Math.random() * 1000),
-      earnings: Math.floor(Math.random() * 50)
+      referralCount: 0,
+      totalReferralVolume: 0,
+      earnings: 0
     };
   }
 
@@ -162,11 +193,6 @@ class StatsService {
       debugLog(`Failed to fetch settings for ${walletAddress}`, error);
     }
     return {};
-  }
-
-  async getTiers(): Promise<unknown[]> {
-    // This is a placeholder for a real tiers API
-    return Promise.resolve([]);
   }
 }
 

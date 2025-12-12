@@ -12,20 +12,23 @@
     "@solana/wallet-adapter-wallets": "^0.19.32",
     "@solana/web3.js": "^1.95.8",
     "@supabase/supabase-js": "^2.84.0",
-    "@types/canvas-confetti": "^1.9.0",
+    "@tanstack/react-query": "^5.90.12",
+    "@tanstack/react-query-devtools": "^5.91.1",
+    "bs58": "^6.0.0",
     "buffer": "^6.0.3",
-    "canvas-confetti": "^1.9.4",
     "clsx": "^2.1.1",
     "date-fns": "^3.6.0",
     "esbuild": "^0.25.0",
-    "framer-motion": "^12.23.25",
+    "html2canvas": "^1.4.1",
     "lottie-react": "^2.4.0",
-    "lucide-react": "^0.555.0",
+    "lucide-react": "^0.468.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-helmet-async": "^2.0.5",
     "react-router-dom": "^6.25.1",
-    "tailwind-merge": "^2.4.0"
+    "tailwind-merge": "^2.4.0",
+    "tweetnacl": "^1.0.3",
+    "web-vitals": "^5.1.0"
   },
   "scripts": {
     "dev": "vite",
@@ -41,12 +44,14 @@
     "test:e2e:isolated": "node scripts/run-playwright-no-vitest.js",
     "lint": "eslint . --report-unused-disable-directives --max-warnings 0",
     "lint:fix": "eslint . --fix",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "health-check": "node scripts/health-check.cjs"
   },
   "devDependencies": {
     "@playwright/test": "^1.56.1",
     "@testing-library/jest-dom": "^6.4.8",
     "@testing-library/react": "^16.0.0",
+    "@types/bs58": "^4.0.4",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@typescript-eslint/eslint-plugin": "^7.18.0",
@@ -66,6 +71,7 @@
     "tailwindcss-animate": "^1.0.7",
     "typescript": "^5.5.4",
     "vite": "^7.2.6",
+    "vite-plugin-compression": "^0.5.1",
     "vite-plugin-node-polyfills": "^0.24.0",
     "vitest": "^4.0.15",
     "webpack-bundle-analyzer": "^5.0.1"

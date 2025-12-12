@@ -1,6 +1,6 @@
 import React from 'react';
 import { LeaderboardEntry } from '@/shared/utils/types';
-import { RoyalIcon, GlowPulse, FloatingAnimation, EntranceAnimation, EnhancedButton } from '@/components/ui';
+import { RoyalIcon, GlowPulse, FloatingAnimation, EntranceAnimation, Button } from '@/components/ui';
 import { formatCurrency } from '@/shared/utils/formatting/currency';
 import { Link } from 'react-router-dom';
 
@@ -20,7 +20,7 @@ export const KingOfTheHill: React.FC<KingOfTheHillProps> = ({ king, onDethrone }
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-gradient-to-b from-accent-primary/5 to-transparent opacity-50 pointer-events-none" />
 
         {/* The Throne Card */}
-        <div className="relative bg-background-secondary/80 backdrop-blur-xl border-2 border-accent-primary rounded-2xl p-8 flex flex-col items-center text-center shadow-[0_0_50px_-12px_rgba(234,179,8,0.3)] overflow-hidden group hover:shadow-[0_0_70px_-12px_rgba(234,179,8,0.5)] transition-all duration-500">
+        <div className="relative bg-background-secondary/90 border-2 border-accent-primary rounded-2xl p-8 flex flex-col items-center text-center shadow-[0_0_50px_-12px_rgba(234,179,8,0.3)] overflow-hidden group hover:shadow-[0_0_70px_-12px_rgba(234,179,8,0.5)] transition-all duration-500">
           
           {/* Decorative Corner Elements */}
           <div className="absolute top-0 left-0 w-16 h-16 border-t-4 border-l-4 border-accent-primary rounded-tl-xl opacity-60" />
@@ -33,7 +33,7 @@ export const KingOfTheHill: React.FC<KingOfTheHillProps> = ({ king, onDethrone }
             <GlowPulse color="gold" intensity="strong" duration={3000}>
               <div className="relative mb-6">
                 <RoyalIcon variant="crown" size={64} className="text-accent-primary filter drop-shadow-[0_0_15px_rgba(234,179,8,0.8)]" />
-                <div className="absolute -top-2 -right-2 animate-ping w-4 h-4 bg-accent-primary rounded-full opacity-75" />
+                <div className="absolute -top-2 -right-2 w-4 h-4 bg-accent-primary rounded-full opacity-75" />
               </div>
             </GlowPulse>
           </FloatingAnimation>
@@ -79,18 +79,17 @@ export const KingOfTheHill: React.FC<KingOfTheHillProps> = ({ king, onDethrone }
 
           {/* Call to Action */}
           {onDethrone && (
-            <EnhancedButton
+            <Button
               variant="gradient"
               size="xl"
               onClick={() => onDethrone(king.totalUsdValue + 1)}
               className="w-full max-w-sm text-xl font-bold shadow-2xl shadow-accent-primary/20 hover:shadow-accent-primary/50 border-2 border-accent-primary/50"
-              hoverScale={true}
             >
               <span className="flex items-center gap-3">
                 <RoyalIcon variant="swords" size={24} />
                 USURP THE THRONE
               </span>
-            </EnhancedButton>
+            </Button>
           )}
           
           <p className="mt-4 text-sm text-text-muted">

@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { useWallet } from '@solana/wallet-adapter-react';
+import { KingOfTheHill } from '@/features/leaderboard/KingOfTheHill';
 import { LeaderboardTable } from '@/features/leaderboard/LeaderboardTable';
 import { LeaderboardFilters } from '@/features/leaderboard/LeaderboardFilters';
+import { UserRankCard } from '@/features/leaderboard/components/UserRankCard';
 import { PaymentModal } from '@/features/payment/PaymentModal';
 import { RoyalIcon } from '@/components/ui';
 import { useLeaderboard } from '@/features/leaderboard/hooks/useLeaderboard';
@@ -10,25 +11,14 @@ import { useDegradedMode } from '@/shared/hooks/useDegradedMode';
 import { LoadingLeaderboard } from '@/shared/components/LoadingDisplay';
 import { PageLayout } from '@/components/layout/PageLayout';
 import { PageHeader } from '@/components/layout/PageHeader';
+import strings from '@/locales/strings.json';
 
 const Leaderboard: React.FC = () => {
-  const { publicKey } = useWallet();
-  const { leaderboard, isLoading, error, refetch } = useLeaderboard();
+  const { leaderboard, isLoading, error, refetch, userRank } = useLeaderboard();
   const { isDegraded, reason } = useDegradedMode();
   const [selectedFilter, setSelectedFilter] = useState('all');
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [paymentAmount, setPaymentAmount] = useState(0);
-  const [userRank, setUserRank] = useState<number | null>(null);
-
-  // Find user's rank in the leaderboard
-  useEffect(() => {
-    if (publicKey && leaderboard.length > 0) {
-      const userEntry = leaderboard.find(entry => entry.walletAddress === publicKey.toString());
-      setUserRank(userEntry?.rank || null);
-    } else {
-      setUserRank(null);
-    }
-  }, [publicKey, leaderboard]);
 
   const handleOvertake = (amount: number) => {
     if (isDegraded) {
@@ -47,18 +37,26 @@ const Leaderboard: React.FC = () => {
   return (
     <PageLayout maxWidth="full" showBackgroundEffects={true}>
       <Helmet>
-        <title>Leaderboard | SpendThrone</title>
-        <meta name="description" content="View the top contributors and compete for the throne on SpendThrone" />
+        <title>{strings.leaderboard.meta_title}</title>
+        <meta name="description" content={strings.leaderboard.meta_description} />
       </Helmet>
 
       <div className="w-full max-w-7xl mx-auto">
           {/* Header */}
           <PageHeader
-            title="Noble Leaderboard"
-            subtitle="Compete for glory and eternal recognition. The throne awaits those who dare to claim it."
+            title={strings.leaderboard.page_title}
+            subtitle={strings.leaderboard.page_subtitle}
             icon="crown"
             variant="default"
           />
+
+          {/* King of the Hill */}
+          {!isLoading && !error && leaderboard.length > 0 && (
+            <KingOfTheHill 
+              king={leaderboard[0]} 
+              onDethrone={!isDegraded ? handleOvertake : undefined} 
+            />
+          )}
 
           {/* Degraded Mode Banner */}
           {isDegraded && (
@@ -66,7 +64,7 @@ const Leaderboard: React.FC = () => {
               <div className="flex items-center gap-3">
                 <RoyalIcon variant="warning" size={20} className="text-warning" />
                 <div>
-                  <h3 className="font-semibold text-warning">Limited Functionality</h3>
+                  <h3 className="font-semibold text-warning">{strings.leaderboard.limited_functionality}</h3>
                   <p className="text-sm text-warning/80">{reason}</p>
                 </div>
               </div>
@@ -75,28 +73,12 @@ const Leaderboard: React.FC = () => {
 
           {/* User Rank Card */}
           {userRank && (
-            <div className="bg-surface border border-border rounded-lg p-6 mb-6">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full bg-accent-primary/10 flex items-center justify-center">
-                    <RoyalIcon variant="user" size={24} className="text-accent-primary" />
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-text-primary">Your Rank</h3>
-                    <p className="text-2xl font-bold text-accent-primary">#{userRank}</p>
-                  </div>
-                </div>
-                {!isDegraded && (
-                  <button
-                    onClick={() => handleOvertake(leaderboard[userRank - 2]?.totalUsdValue + 1 || 1)}
-                    className="bg-accent-primary hover:bg-accent-primary/80 text-white px-4 py-2 rounded-lg transition-colors flex items-center gap-2"
-                  >
-                    <RoyalIcon variant="trend" size={16} />
-                    Climb Higher
-                  </button>
-                )}
-              </div>
-            </div>
+            <UserRankCard
+                userRank={userRank}
+                leaderboard={leaderboard}
+                isDegraded={isDegraded}
+                onOvertake={handleOvertake}
+            />
           )}
 
           {/* Filters */}

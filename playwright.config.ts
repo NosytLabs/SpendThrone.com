@@ -3,7 +3,7 @@ import { defineConfig, devices } from '@playwright/test';
 export default defineConfig({
   globalSetup: './playwright-global-setup.cjs',
   testDir: './tests',
-  testMatch: ['**/css-visual-*.spec.ts', '**/simple-test.spec.ts', '**/debug-page.spec.ts', '**/ui-ux-fixes.spec.ts', '**/accessibility-fix-test.spec.ts', '**/comprehensive-e2e-test.spec.ts', '**/css-classes-fix-test.spec.ts', '**/comprehensive-visual-audit.spec.ts', '**/simple-visual-audit.spec.ts', '**/comprehensive-analysis.spec.ts'], // Only run specific Playwright tests
+  testMatch: ['**/*.spec.ts'], // Run all spec files
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
@@ -14,7 +14,7 @@ export default defineConfig({
     timeout: 10000,
   },
   use: {
-    baseURL: 'http://localhost:3002',
+    baseURL: 'http://localhost:3001',
     trace: 'on-first-retry',
   },
   projects: [
@@ -23,6 +23,10 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'] },
     },
   ],
-
-
+  webServer: {
+    command: 'npm run dev',
+    url: 'http://localhost:3001',
+    reuseExistingServer: !process.env.CI,
+    timeout: 120000,
+  },
 });

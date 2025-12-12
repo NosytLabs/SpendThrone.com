@@ -13,7 +13,7 @@ const NotFound: React.FC = () => {
               <RoyalIcon variant="map" size={80} className="text-text-muted opacity-50" />
             </GlowPulse>
             <div className="absolute -bottom-2 -right-2">
-              <RoyalIcon variant="warning" size={32} className="text-accent-secondary animate-bounce" />
+              <RoyalIcon variant="warning" size={32} className="text-accent-secondary" />
             </div>
           </div>
         </FloatingAnimation>
@@ -26,10 +26,12 @@ const NotFound: React.FC = () => {
         
         <div className="flex flex-col sm:flex-row gap-4">
           <Link to="/">
-            <Button variant="primary" size="lg" className="bg-accent-primary text-black font-bold w-full sm:w-auto shadow-lg hover:shadow-accent-primary/50">
-              <RoyalIcon variant="crown" className="mr-2" />
-              Return to Throne Room
-            </Button>
+            <GlowPulse color="gold" intensity="medium">
+              <Button variant="primary" size="lg" className="bg-accent-primary text-black font-bold w-full sm:w-auto shadow-lg hover:shadow-accent-primary/50">
+                <RoyalIcon variant="crown" className="mr-2" />
+                Return to Throne Room
+              </Button>
+            </GlowPulse>
           </Link>
           
           <Link to="/help">

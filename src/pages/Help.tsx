@@ -1,7 +1,7 @@
 import React from 'react';
 import { PageLayout } from '../components/layout/PageLayout';
 import { PageHeader } from '../components/layout/PageHeader';
-import { RoyalCard, RoyalIcon, Button, EntranceAnimation } from '../components/ui';
+import { RoyalCard, RoyalIcon, Button, EntranceAnimation, GlowPulse } from '../components/ui';
 
 const Help: React.FC = () => {
   return (
@@ -48,9 +48,9 @@ const Help: React.FC = () => {
             </div>
 
             <div className="border-l-2 border-accent-primary/30 pl-6">
-              <h3 className="text-xl font-bold text-white mb-2">What tokens can I use?</h3>
+              <h3 className="text-xl font-bold text-white mb-2">What is Divine Favor?</h3>
               <p className="text-text-secondary leading-relaxed">
-                You can pay directly with <strong className="text-white">SOL</strong>, or use our integrated Jupiter swap to pay with <strong className="text-white">USDC, BONK, WIF</strong>, or almost any other Solana token. Everything is converted to value for the treasury.
+                Divine Favor is a measure of your loyalty to the Kingdom. It is earned through tribute and by bringing new subjects into the fold. Its purpose is metaphysical. Does it guarantee future wealth? <strong className="text-white">No.</strong> Does it look impressive on your profile? <strong className="text-accent-primary">Yes.</strong>
               </p>
             </div>
           </div>
@@ -113,6 +113,23 @@ const Help: React.FC = () => {
             </div>
           </div>
         </RoyalCard>
+
+        {/* CTA */}
+        <div className="mt-12 mb-12 text-center">
+            <h2 className="text-3xl font-bold text-white mb-6 font-cinzel">Ready to Claim Your Status?</h2>
+            <GlowPulse color="gold" intensity="strong" duration={2500}>
+                <Button
+                    variant="primary"
+                    as="link"
+                    to="/"
+                    size="lg"
+                    className="py-4 px-10 text-xl hover:scale-110 transition-transform shadow-2xl rounded-full bg-black text-accent-primary border-4 border-accent-secondary"
+                >
+                    <RoyalIcon variant="crown" className="mr-2 text-gold-500" />
+                    Return to Throne Room
+                </Button>
+            </GlowPulse>
+        </div>
 
       </div>
     </PageLayout>

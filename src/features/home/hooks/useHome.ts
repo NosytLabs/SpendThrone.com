@@ -1,10 +1,11 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { startIntervalWhenVisible } from '@/shared/utils/visibility';
 import { useWallet } from '@solana/wallet-adapter-react';
 import { priceService, PriceData } from '@/core/services/priceService';
 import { statsService } from '@/core/services/statsService';
 import { debugLog } from '@/shared/utils/logger';
 import { createErrorHandler, ErrorMessages } from '@/shared/utils/errorHandler';
+import { APP_CONSTANTS } from '@/core/constants/config';
 
 export interface UserStats {
   totalBalance: number;
@@ -47,7 +48,8 @@ export const useHome = (): HomeData => {
   const [error, setError] = useState<string | null>(null);
   
   // Initialize standardized error handler
-  const errorHandler = createErrorHandler(setError, 'useHome');
+  // Memoize to prevent infinite loop in dependency arrays
+  const errorHandler = useMemo(() => createErrorHandler(setError, 'useHome'), []);
 
   const fetchHomeData = useCallback(async () => {
     try {
@@ -93,7 +95,9 @@ export const useHome = (): HomeData => {
   }, [publicKey, errorHandler]);
 
   useEffect(() => {
-    const REFRESH_MS = import.meta.env.DEV ? 30000 : 60000;
+    const REFRESH_MS = import.meta.env.DEV 
+      ? APP_CONSTANTS.HOME.STATS_REFRESH_INTERVAL_MS 
+      : APP_CONSTANTS.HOME.MARKET_DATA_REFRESH_INTERVAL_MS;
     const gate = startIntervalWhenVisible(fetchHomeData, REFRESH_MS);
     return () => gate.stop();
   }, [fetchHomeData]);

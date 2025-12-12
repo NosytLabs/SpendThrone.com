@@ -66,13 +66,6 @@ export const useAppNavigation = () => {
   }, [navigateTo]);
 
   /**
-   * Navigate to deposit page
-   */
-  const navigateDeposit = useCallback((options?: NavigationOptions) => {
-    navigateTo('/deposit', options);
-  }, [navigateTo]);
-
-  /**
    * Navigate to tiers page
    */
   const navigateTiers = useCallback((options?: NavigationOptions) => {
@@ -94,47 +87,20 @@ export const useAppNavigation = () => {
   }, [navigateTo]);
 
   /**
-   * Navigate to team page
-   */
-  const navigateTeam = useCallback((options?: NavigationOptions) => {
-    navigateTo('/team', options);
-  }, [navigateTo]);
-
-  /**
-   * Navigate to help page
-   */
-  const navigateHelp = useCallback((options?: NavigationOptions) => {
-    navigateTo('/help', options);
-  }, [navigateTo]);
-
-  /**
-   * Navigate back to previous page
-   */
+ * Navigate back to previous page
+ */
   const navigateBack = useCallback(() => {
     navigate(-1);
   }, [navigate]);
-
-  /**
-   * Refresh current page data without full reload
-   * This should be used with hooks that provide refetch functions
-   */
-  const refreshCurrentPage = useCallback(() => {
-    // Dispatch custom event that components can listen to for data refresh
-    window.dispatchEvent(new CustomEvent('app:refresh'));
-  }, []);
 
   return {
     navigateTo,
     navigateHome,
     navigateLeaderboard,
-    navigateDeposit,
     navigateTiers,
     navigateHistory,
     navigateSettings,
-    navigateTeam,
-    navigateHelp,
-    navigateBack,
-    refreshCurrentPage
+    navigateBack
   };
 };
 

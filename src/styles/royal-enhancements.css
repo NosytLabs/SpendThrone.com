@@ -2,18 +2,22 @@
 
 /* 1. Royal Color Palette */
 :root {
-  --royal-purple: #6B46C1;
-  --royal-gold: #F59E0B;
-  --royal-crimson: #DC2626;
-  --royal-silver: #E5E7EB;
+  --royal-purple: #6b46c1;
+  --royal-gold: #f59e0b;
+  --royal-crimson: #dc2626;
+  --royal-silver: #e5e7eb;
   --royal-emerald: #059669;
-  --royal-blue: #2563EB;
-  
+  --royal-blue: #2563eb;
+
   /* Gradients */
-  --royal-gradient: linear-gradient(135deg, var(--royal-purple), var(--royal-gold));
-  --royal-gold-gradient: linear-gradient(135deg, #F59E0B, #FCD34D);
-  --royal-purple-gradient: linear-gradient(135deg, #6B46C1, #9333EA);
-  
+  --royal-gradient: linear-gradient(
+    135deg,
+    var(--royal-purple),
+    var(--royal-gold)
+  );
+  --royal-gold-gradient: linear-gradient(135deg, #f59e0b, #fcd34d);
+  --royal-purple-gradient: linear-gradient(135deg, #6b46c1, #9333ea);
+
   /* Glow Effects */
   --royal-glow: radial-gradient(circle, var(--royal-gold), transparent 70%);
   --royal-shadow: 0 0 20px rgba(245, 158, 11, 0.3);
@@ -31,7 +35,7 @@
 }
 
 .royal-crown-loader::before {
-  content: '';
+  content: "";
   position: absolute;
   width: 100%;
   height: 100%;
@@ -49,13 +53,25 @@
 }
 
 @keyframes crown-pulse {
-  0%, 100% { transform: scale(1); opacity: 0.8; }
-  50% { transform: scale(1.1); opacity: 1; }
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
 }
 
 @keyframes crown-float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-5px); }
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
 }
 
 /* 3. Royal Button Enhancement */
@@ -73,13 +89,18 @@
 }
 
 .royal-button::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
   transition: left 0.5s;
 }
 
@@ -95,7 +116,11 @@
 /* 4. Royal Card Enhancement */
 .royal-card {
   position: relative;
-  background: linear-gradient(135deg, rgba(107, 70, 193, 0.1), rgba(245, 158, 11, 0.1));
+  background: linear-gradient(
+    135deg,
+    rgba(107, 70, 193, 0.1),
+    rgba(245, 158, 11, 0.1)
+  );
   border: 1px solid rgba(245, 158, 11, 0.2);
   border-radius: 12px;
   padding: 24px;
@@ -104,7 +129,7 @@
 }
 
 .royal-card::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -155,12 +180,12 @@
 }
 
 .royal-tier-badge.rare {
-  background: linear-gradient(135deg, #2563EB, #3B82F6);
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
   color: white;
 }
 
 .royal-tier-badge.common {
-  background: linear-gradient(135deg, #6B7280, #9CA3AF);
+  background: linear-gradient(135deg, #6b7280, #9ca3af);
   color: white;
 }
 
@@ -204,7 +229,7 @@
 
 /* 7. Royal Loading Messages */
 .royal-loading-text {
-  font-family: 'Georgia', serif;
+  font-family: "Georgia", serif;
   font-style: italic;
   color: var(--royal-gold);
   text-align: center;
@@ -212,8 +237,13 @@
 }
 
 @keyframes loading-text-pulse {
-  0%, 100% { opacity: 0.7; }
-  50% { opacity: 1; }
+  0%,
+  100% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
 }
 
 /* 8. Royal Rank Change Animation */
@@ -229,19 +259,25 @@
 }
 
 .rank-change-animation.rank-up {
-  color: #10B981;
+  color: #10b981;
   background: rgba(16, 185, 129, 0.1);
 }
 
 .rank-change-animation.rank-down {
-  color: #EF4444;
+  color: #ef4444;
   background: rgba(239, 68, 68, 0.1);
 }
 
 @keyframes rank-change-pulse {
-  0% { transform: scale(1); }
-  50% { transform: scale(1.2); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 /* 9. Royal Glow Effects */
@@ -250,7 +286,7 @@
 }
 
 .royal-glow-effect::after {
-  content: '';
+  content: "";
   position: absolute;
   top: -2px;
   left: -2px;
@@ -263,8 +299,13 @@
 }
 
 @keyframes glow-pulse {
-  0%, 100% { opacity: 0.3; }
-  50% { opacity: 0.6; }
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 0.6;
+  }
 }
 
 /* 10. Royal Success Animation */
@@ -298,9 +339,15 @@
 }
 
 @keyframes success-crown-bounce {
-  0% { transform: scale(0) rotate(-180deg); }
-  50% { transform: scale(1.2) rotate(0deg); }
-  100% { transform: scale(1) rotate(0deg); }
+  0% {
+    transform: scale(0) rotate(-180deg);
+  }
+  50% {
+    transform: scale(1.2) rotate(0deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
 }
 
 @keyframes sparkle-burst {
@@ -340,10 +387,282 @@
 }
 
 @keyframes royal-pulse-gold {
-  0%, 100% { 
+  0%,
+  100% {
     box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7);
   }
-  70% { 
+  70% {
     box-shadow: 0 0 0 10px rgba(245, 158, 11, 0);
   }
+}
+
+/* ===== PREMIUM UI ENHANCEMENTS v2 ===== */
+
+/* 11. Animated Gradient Hero Background */
+.royal-animated-gradient {
+  background: linear-gradient(
+    -45deg,
+    rgba(107, 70, 193, 0.3),
+    rgba(245, 158, 11, 0.2),
+    rgba(147, 51, 234, 0.25),
+    rgba(234, 179, 8, 0.15)
+  );
+  background-size: 400% 400%;
+  animation: gradient-shift 15s ease infinite;
+}
+
+@keyframes gradient-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* 12. Premium Glassmorphism */
+.royal-glass {
+  background: rgba(10, 4, 16, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(245, 158, 11, 0.15);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.royal-glass:hover {
+  border-color: rgba(245, 158, 11, 0.4);
+  box-shadow: 0 12px 48px rgba(107, 70, 193, 0.2),
+    0 0 0 1px rgba(245, 158, 11, 0.3), inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+/* 13. Shimmer Button Effect */
+.royal-shimmer-btn {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #eab308, #ca8a04);
+  color: black;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: none;
+  padding: 14px 32px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.royal-shimmer-btn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.4),
+    transparent
+  );
+  animation: shimmer 3s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 200%;
+  }
+}
+
+.royal-shimmer-btn:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 10px 40px rgba(234, 179, 8, 0.4),
+    0 0 20px rgba(234, 179, 8, 0.2);
+}
+
+.royal-shimmer-btn:active {
+  transform: translateY(-1px) scale(0.98);
+}
+
+/* 14. Scroll Reveal Animations */
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.scroll-reveal.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.scroll-reveal-left {
+  opacity: 0;
+  transform: translateX(-50px);
+  transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.scroll-reveal-left.revealed {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.scroll-reveal-scale {
+  opacity: 0;
+  transform: scale(0.9);
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.scroll-reveal-scale.revealed {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* 15. Premium Typography */
+.royal-heading {
+  font-family: "Cinzel", serif;
+  letter-spacing: 0.1em;
+  text-shadow: 0 2px 10px rgba(234, 179, 8, 0.3);
+}
+
+.royal-heading-glow {
+  text-shadow: 0 0 10px rgba(234, 179, 8, 0.5), 0 0 20px rgba(234, 179, 8, 0.3),
+    0 0 40px rgba(234, 179, 8, 0.1);
+}
+
+/* 16. Floating Elements Animation */
+.royal-float {
+  animation: royal-float 6s ease-in-out infinite;
+}
+
+@keyframes royal-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-10px) rotate(1deg);
+  }
+  50% {
+    transform: translateY(-5px) rotate(0deg);
+  }
+  75% {
+    transform: translateY(-15px) rotate(-1deg);
+  }
+}
+
+/* 17. Premium Border Glow */
+.royal-border-glow {
+  position: relative;
+}
+
+.royal-border-glow::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  padding: 2px;
+  background: linear-gradient(135deg, #eab308, #9333ea, #eab308);
+  background-size: 200% 200%;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: border-rotate 4s linear infinite;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.royal-border-glow:hover::before {
+  opacity: 1;
+}
+
+@keyframes border-rotate {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* 18. Interactive Hover Effects */
+.royal-hover-scale {
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.royal-hover-scale:hover {
+  transform: scale(1.05);
+}
+
+/* 19. Noise Texture Overlay */
+.royal-noise {
+  position: relative;
+}
+
+.royal-noise::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: repeating-radial-gradient(
+    circle at 50% 50%,
+    transparent 0,
+    #000000 1px
+  ),
+  repeating-linear-gradient(
+    #374151 0,
+    #374151 1px
+  );
+  background-size: 3px 3px;
+  opacity: 0.05;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+}
+
+/* 20. Premium Input Focus */
+.royal-input:focus {
+  outline: none;
+  border-color: rgba(234, 179, 8, 0.6);
+  box-shadow: 0 0 0 3px rgba(234, 179, 8, 0.15), 0 0 20px rgba(234, 179, 8, 0.1);
+}
+
+/* 21. Subtle Parallax Depth */
+.royal-depth-1 {
+  transform: translateZ(0);
+}
+.royal-depth-2 {
+  transform: translateZ(10px);
+}
+.royal-depth-3 {
+  transform: translateZ(20px);
+}
+
+/* 22. Royal Table Enhancements */
+.royal-table-row {
+  transition: all 0.3s ease;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.royal-table-row:hover {
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transform: translateY(-1px);
+  z-index: 5;
+}
+
+.royal-table-header {
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-family: "Cinzel", serif;
+  background: rgba(10, 5, 20, 0.8);
+  backdrop-filter: blur(10px);
 }

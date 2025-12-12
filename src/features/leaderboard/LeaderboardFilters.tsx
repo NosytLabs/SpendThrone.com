@@ -1,6 +1,5 @@
 import React from 'react';
 import { RoyalIcon } from '@/components/ui';
-import styles from './LeaderboardFilters.module.css';
 
 interface LeaderboardFiltersProps {
   selectedFilter: string;
@@ -23,16 +22,21 @@ export const LeaderboardFilters: React.FC<LeaderboardFiltersProps> = ({
   disabled = false 
 }) => {
   return (
-    <div className={styles.filtersContainer}>
-      <div className={styles.filtersScroll}>
+    <div className="w-full overflow-x-auto pb-2">
+      <div className="flex gap-3 min-w-max py-1">
         {filters.map((filter) => (
           <button
             key={filter.value}
             onClick={() => onFilterChange(filter.value)}
             disabled={disabled}
-            className={`${styles.filterButton} ${
-              selectedFilter === filter.value ? styles.active : ''
-            } ${disabled ? styles.disabled : ''}`}
+            className={`
+              flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 whitespace-nowrap border
+              ${selectedFilter === filter.value 
+                ? 'text-accent-primary bg-accent-primary/10 border-accent-primary/30 hover:bg-accent-primary/15 hover:border-accent-primary/40' 
+                : 'text-text-secondary bg-surface border-border-primary hover:text-text-primary hover:bg-surface-hover hover:border-border-hover hover:-translate-y-[1px]'
+              }
+              ${disabled ? 'opacity-50 cursor-not-allowed hover:transform-none' : 'cursor-pointer'}
+            `}
           >
             <RoyalIcon variant={filter.icon} size={16} />
             <span>{filter.label}</span>

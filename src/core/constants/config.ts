@@ -1,0 +1,18 @@
+export const APP_CONSTANTS = {
+  LEADERBOARD: {
+    FETCH_LIMIT: 50,
+    REFRESH_INTERVAL_MS: 30000,
+    REALTIME_CHANNEL: 'public:leaderboard-changes',
+    TABLE: 'leaderboard',
+    SCHEMA: 'public'
+  },
+  HOME: {
+    STATS_REFRESH_INTERVAL_MS: 30000,
+    MARKET_DATA_REFRESH_INTERVAL_MS: 60000
+  },
+  PAYMENT: {
+    TREASURY_FEE_SOL: 0.005,
+    MIN_USD_VALUE: 0.01,
+    CONFIRMATION_TIMEOUT_MS: 60000
+  }
+} as const;

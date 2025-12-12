@@ -9,7 +9,8 @@ export async function trackDeposit(
   token: string,
   txHash: string,
   usdValue: number,
-  message?: string
+  message?: string,
+  link?: string
 ) {
   // If supabase is not initialized (e.g. missing env vars), we can't track to DB.
   
@@ -24,7 +25,8 @@ export async function trackDeposit(
 
     // Record the transaction
     // Schema matches 'transactions' table in supabase/schema.sql + 20251202_enhance_transactions.sql
-    const { error } = await supabase.from('transactions').insert({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { error } = await (supabase as any).from('transactions').insert({
       signature: txHash,
       user_id: walletAddress,
       amount_sol: token === 'SOL' ? amount : 0, // Required by schema (NOT NULL)
@@ -43,7 +45,8 @@ export async function trackDeposit(
     const databaseService = DatabaseService.getInstance();
     await databaseService.upsertLeaderboardEntry(walletAddress, usdValue, {
       incrementTransactions: true,
-      message
+      message: message, // Update message only if provided?
+      link: link
     });
 
     debugLog('Deposit tracked successfully', 'info');
@@ -53,24 +56,16 @@ export async function trackDeposit(
   }
 }
 
+export function getMockHistory() {
+  return [
+    { id: 'tx1', amount: 50, currency: 'SOL', timestamp: new Date(Date.now() - 86400000).toISOString(), type: 'tribute', rankChange: 2 },
+    { id: 'tx2', amount: 25, currency: 'SOL', timestamp: new Date(Date.now() - 172800000).toISOString(), type: 'tribute', rankChange: 0 },
+  ];
+}
+
 export async function getDepositHistory(walletAddress: string): Promise<unknown[]> {
   // Fallback deposit history with sample data
   debugLog(`Fetching deposit history for ${walletAddress}`);
-  return Promise.resolve([
-    {
-      id: '1',
-      amount: 1.5,
-      timestamp: Date.now() - 86400000,
-      status: 'confirmed',
-      txSignature: 'sample-tx-1'
-    },
-    {
-      id: '2', 
-      amount: 2.3,
-      timestamp: Date.now() - 172800000,
-      status: 'confirmed',
-      txSignature: 'sample-tx-2'
-    }
-  ]);
+  return Promise.resolve(getMockHistory());
 }
 

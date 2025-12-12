@@ -25,7 +25,15 @@ export default [
         afterEach: 'readonly',
         beforeAll: 'readonly',
         afterAll: 'readonly',
-        jest: 'readonly'
+        jest: 'readonly',
+        console: 'readonly',
+        window: 'readonly',
+        AbortController: 'readonly',
+        fetch: 'readonly',
+        TextEncoder: 'readonly',
+        TextDecoder: 'readonly',
+        HTMLCanvasElement: 'readonly',
+        SVGSVGElement: 'readonly'
       },
       parserOptions: {
         ecmaVersion: 'latest',
@@ -67,6 +75,7 @@ export default [
         RequestInit: 'readonly',
         URL: 'readonly',
         URLSearchParams: 'readonly',
+        AbortController: 'readonly',
         KeyboardEvent: 'readonly',
         MouseEvent: 'readonly',
         Node: 'readonly',
@@ -100,7 +109,11 @@ export default [
         CustomEvent: 'readonly',
         MediaQueryListEvent: 'readonly',
         EventListener: 'readonly',
-        DOMRect: 'readonly'
+        DOMRect: 'readonly',
+        TextEncoder: 'readonly',
+        TextDecoder: 'readonly',
+        HTMLCanvasElement: 'readonly',
+        SVGSVGElement: 'readonly'
       },
       parserOptions: {
         ecmaVersion: 'latest',
@@ -132,9 +145,11 @@ export default [
     settings: { react: { version: 'detect' } }
   },
   {
-    files: ['src/components/ui/ErrorBoundary.tsx'],
+    files: ['src/components/ui/ErrorBoundary.tsx', 'scripts/**'],
     rules: {
-      'no-console': 'off'
+      'no-console': 'off',
+      'no-undef': 'off',
+      '@typescript-eslint/no-var-requires': 'off'
     }
   }
 ]

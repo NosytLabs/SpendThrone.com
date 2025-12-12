@@ -1,37 +1,61 @@
 
-import { useState, useEffect, useCallback } from 'react';
+import { useMemo, useEffect } from 'react';
+import { supabase } from '@/core/database/supabase';
 import { databaseService } from '@/core/services/databaseService';
-import { LeaderboardEntry } from '@/shared/utils/types';
-import { createErrorHandler, ErrorMessages } from '@/shared/utils/errorHandler';
+import { useWallet } from '@solana/wallet-adapter-react';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+
+import { APP_CONSTANTS } from '@/core/constants/config';
 
 export const useLeaderboard = () => {
-  const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { publicKey } = useWallet();
+  const queryClient = useQueryClient();
   
-  // Initialize standardized error handler
-  const errorHandler = createErrorHandler(setError, 'useLeaderboard');
+  const { data: leaderboard = [], isLoading, error, refetch } = useQuery({
+    queryKey: ['leaderboard'],
+    queryFn: () => databaseService.getLeaderboard(APP_CONSTANTS.LEADERBOARD.FETCH_LIMIT),
+    staleTime: 1000 * 60, // 1 minute
+  });
 
-  const fetchLeaderboard = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      setError(null);
-      const data = await databaseService.getLeaderboard(50);
-      setLeaderboard(data);
-    } catch (err) {
-      errorHandler.handleError(err, {
-        context: 'fetchLeaderboard',
-        fallbackMessage: ErrorMessages.API_ERROR,
-        showToast: true
-      });
-    } finally {
-      setIsLoading(false);
+  // Calculate user rank
+  const userRank = useMemo(() => {
+    if (publicKey && leaderboard.length > 0) {
+      const userEntry = leaderboard.find(entry => entry.walletAddress === publicKey.toString());
+      return userEntry?.rank || null;
     }
-  }, [errorHandler]);
+    return null;
+  }, [publicKey, leaderboard]);
 
+  // Subscribe to realtime leaderboard changes when Supabase is available
   useEffect(() => {
-    fetchLeaderboard();
-  }, [fetchLeaderboard]);
+    if (!supabase) return;
 
-  return { leaderboard, isLoading, error, refetch: fetchLeaderboard };
+    const channel = supabase
+      .channel(APP_CONSTANTS.LEADERBOARD.REALTIME_CHANNEL)
+      .on(
+        'postgres_changes',
+        { event: '*', schema: APP_CONSTANTS.LEADERBOARD.SCHEMA, table: APP_CONSTANTS.LEADERBOARD.TABLE },
+        () => {
+          // Invalidate query to trigger refetch
+          queryClient.invalidateQueries({ queryKey: ['leaderboard'] });
+        }
+      )
+      .subscribe();
+
+    return () => {
+      try {
+        supabase?.removeChannel(channel);
+      } catch {
+        // ignore
+      }
+    };
+  }, [queryClient]);
+
+  return { 
+    leaderboard, 
+    isLoading, 
+    error: error ? (error as Error).message : null, 
+    refetch, 
+    userRank 
+  };
 };

@@ -13,6 +13,13 @@ export interface LeaderboardEntry {
   timeAgo: string;
   message?: string;
   link?: string;
+  socials?: {
+    twitter?: string;
+    website?: string;
+    telegram?: string;
+  };
+  customLinks?: { label: string; url: string }[];
+  customSections?: { title: string; content: string }[];
 }
 
 export interface Stats {
@@ -105,12 +112,13 @@ export interface Achievement {
 }
 
 export interface Transaction {
-  id: number;
+  id: number | string;
   amount: number;
   currency: string;
   timestamp: string;
   type: string;
   rankChange: number;
+  signature?: string;
 }
 
 export interface RankHistoryPoint {
@@ -143,4 +151,8 @@ export interface UserData {
   achievements: Achievement[];
   recentTransactions: Transaction[];
   stats: UserProfileStats;
+  message?: string;
+  link?: string;
+  customLinks?: { label: string; url: string }[];
+  customSections?: { title: string; content: string }[];
 }

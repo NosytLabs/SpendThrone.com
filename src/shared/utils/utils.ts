@@ -32,23 +32,6 @@ export const formatNumber = formatCompactNumber;
 export const formatPercentage = formatPercentageCanonical;
 
 /**
- * Format Solana addresses
- */
-export function formatSolAddress(address: string, startLength: number = 4, endLength: number = 4): string {
-  if (!address || address.length <= startLength + endLength) {
-    return address;
-  }
-  return `${address.slice(0, startLength)}...${address.slice(-endLength)}`;
-}
-
-/**
- * Sleep/delay function
- */
-export function sleep(ms: number): Promise<void> {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-/**
  * Escape special characters in a string for use in a regular expression
  */
 export function escapeRegExp(string: string): string {

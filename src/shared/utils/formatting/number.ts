@@ -52,28 +52,6 @@ export function formatWithCommas(num: number): string {
 }
 
 /**
- * Format a number as an ordinal (1st, 2nd, 3rd, etc.)
- * @param num - The number to format
- * @returns Formatted ordinal string
- */
-export function formatOrdinal(num: number): string {
-  if (isNaN(num)) return '0';
-  
-  const j = num % 10;
-  const k = num % 100;
-  
-  if (j === 1 && k !== 11) {
-    return `${num}st`;
-  } else if (j === 2 && k !== 12) {
-    return `${num}nd`;
-  } else if (j === 3 && k !== 13) {
-    return `${num}rd`;
-  } else {
-    return `${num}th`;
-  }
-}
-
-/**
  * Format a number with a specified number of significant digits
  * @param num - The number to format
  * @param digits - Number of significant digits (default: 3)
@@ -158,27 +136,7 @@ export function clamp(num: number, min: number, max: number): number {
   return Math.max(min, Math.min(num, max));
 }
 
-/**
- * Check if a number is even
- * @param num - The number to check
- * @returns True if the number is even, false otherwise
- */
-export function isEven(num: number): boolean {
-  if (isNaN(num)) return false;
-  
-  return num % 2 === 0;
-}
 
-/**
- * Check if a number is odd
- * @param num - The number to check
- * @returns True if the number is odd, false otherwise
- */
-export function isOdd(num: number): boolean {
-  if (isNaN(num)) return false;
-  
-  return num % 2 !== 0;
-}
 
 /**
  * Calculate the average of an array of numbers
@@ -303,47 +261,9 @@ export function lcm(a: number, b: number): number {
   return Math.abs(a * b) / gcd(a, b);
 }
 
-/**
- * Convert a number to scientific notation
- * @param num - The number to convert
- * @param decimals - Number of decimal places (default: 2)
- * @returns Number in scientific notation as a string
- */
-export function toScientific(num: number, decimals: number = 2): string {
-  if (isNaN(num)) return '0';
-  
-  return num.toExponential(decimals);
-}
 
-/**
- * Convert a number to a specific base (radix)
- * @param num - The number to convert
- * @param base - The base to convert to (default: 16 for hex)
- * @returns Number in the specified base as a string
- */
-export function toBase(num: number, base: number = 16): string {
-  if (isNaN(num)) return '0';
-  
-  return num.toString(base);
-}
 
-/**
- * Calculate the factorial of a number
- * @param num - The number to calculate the factorial of
- * @returns The factorial of the number
- */
-export function factorial(num: number): number {
-  if (isNaN(num) || num < 0) return 0;
-  
-  if (num === 0) return 1;
-  
-  let result = 1;
-  for (let i = 2; i <= num; i++) {
-    result *= i;
-  }
-  
-  return result;
-}
+
 
 /**
  * Calculate the percentage of a total
@@ -509,4 +429,4 @@ export function variance(nums: number[]): number {
   const squareDiffs = nums.map((num) => Math.pow(num - avg, 2));
   
   return average(squareDiffs);
-}
+}

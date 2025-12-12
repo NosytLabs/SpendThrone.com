@@ -1,5 +1,6 @@
 import React, { Component, ErrorInfo, ReactNode } from 'react';
 import { cn } from '@/shared/utils/utils';
+import { logError } from '@/shared/utils/logger';
 import { Button } from './Button';
 import { RoyalIcon } from './RoyalIcon';
 import { Card } from './Card';
@@ -39,7 +40,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error('ErrorBoundary caught an error:', error, errorInfo);
+    logError('ErrorBoundary caught an error:', error, errorInfo);
     
     this.setState({
       error,
@@ -48,12 +49,6 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
 
     if (this.props.onError) {
       this.props.onError(error, errorInfo);
-    }
-
-    // Log to external service in production
-    if (import.meta.env.PROD) {
-      // Log error to console in production for monitoring tools
-      console.error('Production error logged:', error.message);
     }
   }
 
@@ -111,9 +106,9 @@ export const ErrorFallback: React.FC<ErrorFallbackProps> = ({
   className,
   title = 'Something went wrong',
   message = 'We encountered an unexpected error. Please try again.',
-  showDetails = import.meta.env.DEV,
+  showDetails = true,
 }) => {
-  const [isExpanded, setIsExpanded] = React.useState(false);
+  const [isExpanded, setIsExpanded] = React.useState(true);
 
   const handleReload = () => {
     window.location.reload();

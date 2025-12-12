@@ -4,7 +4,7 @@ import { cn } from '@/shared/utils/utils';
 import { RoyalIcon } from './RoyalIcon';
 import { BounceAnimation, GlowPulse, ShimmerEffect } from './AnimationUtilities';
 import { ToastContext, ToastContextType, EnhancedToastProps, EnhancedToastContainerProps } from './toast-context';
-import { useEnhancedToast } from './useEnhancedToast';
+import { useToastState } from './useToastState';
 
 export type { EnhancedToastProps, EnhancedToastContainerProps };
 
@@ -229,7 +229,7 @@ export const EnhancedToast: React.FC<EnhancedToastProps> = ({
 };
 
 export const EnhancedToastProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { toasts, addToast, removeToast } = useEnhancedToast();
+  const { toasts, addToast, removeToast } = useToastState();
 
   return (
     <ToastContext.Provider value={{ addToast: addToast as unknown as ToastContextType['addToast'], removeToast }}>

@@ -25,25 +25,25 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
             {/* Global Hero Gradient (Transparent to let PageLayout mesh show through) */}
             <div className="absolute inset-0 bg-gradient-to-b from-gold-500/10 to-transparent z-0" />
 
-            <div className="w-full px-4 sm:px-6 lg:px-8 relative z-10 space-y-8">
+            <div className="w-full max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-8">
 
                 {/* Animated Icon */}
                 {icon && (
-                    <div className={`inline-block ${!isCompact && 'animate-float'}`}>
+                    <div className={`flex justify-center w-full ${!isCompact && 'animate-float'}`}>
                         {typeof icon === 'string' ? (
                             <RoyalIcon
                                 variant={icon as RoyalIconProps['variant']}
                                 size={isCompact ? 48 : 64}
-                                className={`mx-auto mb-4 ${isCompact ? 'opacity-90' : ''}`}
+                                className={`mb-6 md:mb-8 ${isCompact ? 'opacity-90' : ''}`}
                             />
                         ) : (
-                            <div className="mx-auto mb-4">{icon}</div>
+                            <div className="mb-6 md:mb-8">{icon}</div>
                         )}
                     </div>
                 )}
 
                 {/* Title with Glow */}
-                <h1 className={`${isCompact ? 'royal-text-title' : 'royal-text-hero'} text-transparent bg-clip-text bg-gradient-to-r from-gold-400 via-gold-200 to-gold-500 drop-shadow-[0_0_35px_var(--shadow-solana-lg)] animate-text-gradient px-4`}>
+                <h1 className={`${isCompact ? 'royal-text-title' : 'royal-text-hero'} royal-heading-glow text-transparent bg-clip-text bg-gradient-to-r from-gold-400 via-gold-200 to-gold-500 drop-shadow-[0_0_35px_var(--shadow-solana-lg)] animate-text-gradient px-4`}>
                     {title}
                 </h1>
 

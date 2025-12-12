@@ -10,7 +10,7 @@ export interface LoadingDisplayProps {
   isLoading: boolean;
   context?: keyof LoadingConfig['messages'];
   customMessage?: string;
-  variant?: 'spinner' | 'overlay' | 'skeleton' | 'skeleton-card' | 'skeleton-table' | 'dots' | 'bars' | 'pulse' | 'wave' | 'lottie';
+  variant?: 'spinner' | 'overlay' | 'skeleton' | 'skeleton-card' | 'skeleton-table' | 'dots' | 'bars' | 'pulse' | 'wave' | 'crown';
   size?: 'sm' | 'md' | 'lg' | 'xl';
   color?: 'primary' | 'secondary' | 'white' | 'solana-purple' | 'solana-green' | 'solana-blue';
   className?: string;
@@ -78,7 +78,7 @@ export const LoadingDisplay: React.FC<LoadingDisplayProps> = ({
       <LoadingOverlay
         isLoading={isLoading}
         message={message}
-        variant={['dots', 'bars', 'pulse', 'wave', 'lottie'].includes(variant) ? variant as 'dots' | 'bars' | 'pulse' | 'wave' | 'lottie' : 'spinner'}
+        variant={['dots', 'bars', 'pulse', 'wave', 'crown'].includes(variant) ? variant as 'dots' | 'bars' | 'pulse' | 'wave' | 'crown' : 'spinner'}
         size={size}
         color={color === 'primary' || color === 'secondary' || color === 'white' ? color : 'primary'}
         showProgress={progress !== undefined}
@@ -126,7 +126,7 @@ export const LoadingDisplay: React.FC<LoadingDisplayProps> = ({
     )}>
       {showIcon && (
         <LoadingSpinner
-          variant={variant as 'spinner' | 'lottie' | 'dots' | 'bars' | 'pulse' | 'wave'}
+          variant={variant as 'spinner' | 'crown' | 'dots' | 'bars' | 'pulse' | 'wave'}
           size={size}
           color={color}
           className="mb-4"
@@ -236,7 +236,7 @@ export const LoadingWallet: React.FC<{ isLoading: boolean }> = ({ isLoading }) =
   <LoadingDisplay
     isLoading={isLoading}
     context="wallet"
-    variant="lottie"
+    variant="crown"
     size="xl"
     centered={true}
   />

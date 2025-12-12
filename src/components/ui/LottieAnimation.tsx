@@ -1,5 +1,6 @@
 import React, { useRef, MutableRefObject, useEffect } from 'react';
 import Lottie, { LottieRefCurrentProps } from 'lottie-react';
+import { logError } from '@/shared/utils/logger';
 
 export interface LottieAnimationProps {
   animationData?: unknown;
@@ -32,8 +33,7 @@ export const LottieAnimation: React.FC<LottieAnimationProps> = ({
       fetch(url)
         .then(response => response.json())
         .then(data => setFetchedData(data))
-        // eslint-disable-next-line no-console
-        .catch(err => console.error("Failed to load Lottie animation:", err));
+        .catch(err => logError("Failed to load Lottie animation:", err));
     }
   }, [url]);
 

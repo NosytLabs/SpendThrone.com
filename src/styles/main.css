@@ -129,8 +129,8 @@ body {
   --color-primary-700: #a16207;
 
   /* Structural Colors */
-  --bg-surface: #0f172a;
-  --border-color: #374151;
+  --bg-surface: #020410; /* Deep Royal Night */
+  --border-color: #1e293b;
 
   /* Royal Theme Colors */
   --color-gold-400: #facc15;
@@ -155,22 +155,7 @@ body {
 
 /* ===== DESIGN SYSTEM TOKENS ===== */
 
-/* Color System */
-.bg-background-primary {
-  background-color: #0a0a0a;
-}
-
-.bg-background-secondary {
-  background-color: #111827;
-}
-
-.bg-background-body {
-  background-color: #0a0a0a;
-}
-
-.bg-surface {
-  background-color: #0f172a;
-}
+/* Color System - Managed by Tailwind Config */
 
 /* Premium Backgrounds */
 .bg-hero-gradient {
@@ -205,60 +190,30 @@ body {
 
 /* Enhanced Glassmorphism - Optimized */
 .bg-background-glass {
-  background-color: rgba(17, 24, 39, 0.6); /* Increased opacity for less reliance on blur */
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  background-color: rgba(2, 4, 16, 0.7); /* Deep royal tint */
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(234, 179, 8, 0.15); /* Subtle Gold border */
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
 }
 
 @media (max-width: 640px) {
   .bg-background-glass {
-    backdrop-filter: none; /* Disable blur on mobile for performance */
+    backdrop-filter: none;
     -webkit-backdrop-filter: none;
-    background-color: rgba(17, 24, 39, 0.95); /* Higher opacity fallback */
+    background-color: rgba(2, 4, 16, 0.95);
   }
 }
 
 .bg-background-glass-hover {
-  background-color: rgba(17, 24, 39, 0.6);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  background-color: rgba(2, 4, 16, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(234, 179, 8, 0.3); /* Stronger Gold border on hover */
+  box-shadow: 0 10px 40px -10px rgba(234, 179, 8, 0.1);
 }
 
-.text-text {
-  color: #e5e7eb;
-}
-
-.text-text-primary {
-  color: #e5e7eb;
-}
-
-.text-text-secondary {
-  color: #9ca3af;
-}
-
-.text-text-muted {
-  color: #6b7280;
-}
-
-.text-text-soft {
-  color: #cbd5e1;
-}
-
-.border-border {
-  border-color: #374151;
-}
-
-.border-border-primary {
-  border-color: #374151;
-}
-
-.border-border-hover {
-  border-color: #4b5563;
-}
+/* Text and Border Tokens - Managed by Tailwind Config */
 
 /* ===== SPACING SYSTEM ===== */
 
@@ -328,30 +283,7 @@ body {
   padding: 6rem;
 }
 
-/* Gap utilities */
-.gap-1 {
-  gap: 0.25rem;
-}
-
-.gap-2 {
-  gap: 0.5rem;
-}
-
-.gap-3 {
-  gap: 0.75rem;
-}
-
-.gap-4 {
-  gap: 1rem;
-}
-
-.gap-6 {
-  gap: 1.5rem;
-}
-
-.gap-8 {
-  gap: 2rem;
-}
+/* Gap utilities - Managed by Tailwind Config */
 
 /* ===== TYPOGRAPHY SYSTEM ===== */
 
@@ -416,22 +348,7 @@ h3 {
   }
 }
 
-/* Re-add Tailwind text utilities if they were inadvertently overridden by generic selectors, 
-   though usually utility classes have higher specificity or !important if configured. 
-   Actually, standard Tailwind classes like text-center should work fine. 
-   Let's ensure we don't break alignment. */
-
-.text-center {
-  text-align: center;
-}
-
-.text-left {
-  text-align: left;
-}
-
-.text-right {
-  text-align: right;
-}
+/* Text Alignment - Managed by Tailwind Config */
 
 /* ===== ANIMATIONS ===== */
 
@@ -602,3 +519,32 @@ h3 {
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background-color: var(--color-accent-primary);
 }
+
+/* ===== PERFORMANCE & ACCESSIBILITY ===== */
+/* Disable heavy animations for users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  .animate-pulse,
+  .animate-ping,
+  .animate-bounce,
+  .animate-spin,
+  .animate-spin-slow,
+  .animate-float {
+    animation: none !important;
+  }
+}
+
+/* GPU-accelerated transforms for smoother animations */
+.transform-gpu {
+  transform: translateZ(0);
+  will-change: transform;
+}
+

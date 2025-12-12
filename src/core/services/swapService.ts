@@ -3,11 +3,11 @@ import {
   PublicKey, 
   Transaction, 
   VersionedTransaction, 
-  TransactionInstruction,
   TransactionMessage,
   AddressLookupTableAccount,
   SystemProgram,
-  LAMPORTS_PER_SOL
+  LAMPORTS_PER_SOL,
+  TransactionInstruction
 } from '@solana/web3.js';
 import { Buffer } from 'buffer';
 import {
@@ -15,21 +15,12 @@ import {
   createTransferInstruction,
   TOKEN_PROGRAM_ID,
 } from '@solana/spl-token';
-import { SYMBOL_TO_MINT } from '@/core/constants/tokens';
-import { resolveJupiterApiUrl, getRpcUrl, JUPITER_TOKENS_CACHE, isRpcEnabled } from '@/core/constants/endpoints';
+import { SYMBOL_TO_MINT, TOKENS } from '@/core/constants/tokens';
+import { APP_CONSTANTS } from '@/core/constants/config';
+import { resolveJupiterApiUrl, getRpcUrl, JUPITER_TOKENS_CACHE, isRpcEnabled, getTreasuryAddress } from '@/core/constants/endpoints';
 import { debugWarn, logError } from '@/shared/utils/logger';
-
-// Types for legacy/local deposit records
-type LegacyBurn = {
-  id: string;
-  amount: number;
-  usdValue: number;
-  timestamp: number;
-  token: string;
-  walletAddress?: string;
-  txHash: string;
-  status: string;
-};
+import { priceService } from '@/core/services/priceService';
+import { apiClient } from '@/core/services/apiClient';
 
 export type DepositRecord = {
   id: string;
@@ -41,11 +32,6 @@ export type DepositRecord = {
   txHash: string;
   status: string;
 };
-import { priceService } from '@/core/services/priceService';
-import { apiClient } from '@/core/services/apiClient';
-import { getTreasuryAddress, getTreasuryUsdcAccount } from '@/core/constants/endpoints';
-
-// Use centralized constants for mint addresses
 
 // Minimal types to avoid any usage while keeping external API flexible
 type TokenInfo = {
@@ -170,7 +156,116 @@ class SwapService {
     }
   }
 
-  async executeSwap(quote: QuoteResult, wallet: WalletLike, onStatusUpdate: ((status: string) => void) | null = null): Promise<{ txid: string; inputAmount: number; outputAmount: number; success: boolean; confirmation: { value?: { err?: unknown } } } > {
+  async executeDirectDeposit(wallet: WalletLike, amount: number, onStatusUpdate?: (status: string) => void, options?: { message?: string; link?: string }): Promise<string> {
+    try {
+      if (!wallet.publicKey || !wallet.signTransaction) {
+        throw new Error('Wallet not connected or does not support signing');
+      }
+
+      const treasuryAddr = getTreasuryAddress();
+      if (!treasuryAddr) {
+        throw new Error('Treasury address not configured');
+      }
+
+      const usdcMint = new PublicKey(SYMBOL_TO_MINT.USDC);
+      const userPubkey = new PublicKey(wallet.publicKey.toString());
+      const treasuryPubkey = new PublicKey(treasuryAddr);
+
+      // Get ATAs
+      const userAta = await getAssociatedTokenAddress(usdcMint, userPubkey);
+      const treasuryAta = await getAssociatedTokenAddress(usdcMint, treasuryPubkey);
+
+      const transaction = new Transaction();
+
+      // Add memo if provided
+      if (options?.message) {
+        transaction.add(
+          new TransactionInstruction({
+            keys: [{ pubkey: userPubkey, isSigner: true, isWritable: true }],
+            programId: new PublicKey('MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcQb'),
+            data: Buffer.from(options.message, 'utf-8'),
+          })
+        );
+      }
+
+      // Add transfer instruction
+      const amountUnits = Math.floor(amount * 1_000_000); // USDC has 6 decimals
+      transaction.add(
+        createTransferInstruction(
+          userAta,
+          treasuryAta,
+          userPubkey,
+          amountUnits,
+          [],
+          TOKEN_PROGRAM_ID
+        )
+      );
+
+      // Add SOL fee transfer (0.005 SOL)
+      const feeAmount = APP_CONSTANTS.PAYMENT.TREASURY_FEE_SOL * LAMPORTS_PER_SOL;
+      transaction.add(
+        SystemProgram.transfer({
+          fromPubkey: userPubkey,
+          toPubkey: treasuryPubkey,
+          lamports: feeAmount
+        })
+      );
+
+      onStatusUpdate?.('Signing transaction...');
+      
+      // Get blockhash
+      const { blockhash, lastValidBlockHeight } = await this.connection.getLatestBlockhash();
+      transaction.recentBlockhash = blockhash;
+      transaction.feePayer = userPubkey;
+
+      const signedTx = await wallet.signTransaction(transaction);
+      
+      onStatusUpdate?.('Sending transaction...');
+      const signature = await this.connection.sendRawTransaction(signedTx.serialize());
+
+      onStatusUpdate?.('Confirming transaction...');
+      await this.connection.confirmTransaction({
+        signature,
+        blockhash,
+        lastValidBlockHeight
+      });
+
+      // Record deposit
+      this.saveLocalDeposit({
+        id: signature,
+        amount: amount,
+        usdValue: amount, // USDC is pegged
+        timestamp: Date.now(),
+        originalToken: 'USDC',
+        walletAddress: userPubkey.toString(),
+        txHash: signature,
+        status: 'confirmed'
+      });
+
+      // Track in DB
+      try {
+        const { trackDeposit } = await import('@/core/services/depositService');
+        await trackDeposit(
+          userPubkey.toString(),
+          amount,
+          'USDC',
+          signature,
+          amount,
+          options?.message,
+          options?.link
+        );
+      } catch (error) {
+        debugWarn('Failed to track deposit in DB:', error);
+      }
+
+      return signature;
+    } catch (error) {
+      logError('Direct deposit failed:', error);
+      throw error;
+    }
+  }
+
+  async executeSwap(quote: QuoteResult, wallet: WalletLike, onStatusUpdate: ((status: string) => void) | null = null, options?: { message?: string; link?: string }): Promise<{ txid: string; inputAmount: number; outputAmount: number; success: boolean; confirmation: { value?: { err?: unknown } } } > {
     try {
       if (!isRpcEnabled()) {
         throw new Error('RPC is disabled. Swaps are unavailable at the moment.');
@@ -185,6 +280,8 @@ class SwapService {
       onStatusUpdate?.('Preparing swap transaction...');
 
       // Determine fee account (Treasury USDC ATA)
+      // This is CRITICAL: We use this as both the fee account AND the destination account
+      // to ensure the swapped funds (Tribute) go to the Treasury, not back to the user.
       let feeAccount: string | undefined;
       try {
         const treasuryAddr = getTreasuryAddress();
@@ -199,6 +296,10 @@ class SwapService {
         debugWarn('Failed to derive fee account', e);
       }
 
+      if (!feeAccount) {
+        throw new Error('Failed to identify Treasury destination. Payment cannot be processed.');
+      }
+
       // Get swap transaction from Jupiter Ultra API
       const url = `${this.apiUrl}/swap`;
       const headers = this.getHeaders();
@@ -209,6 +310,7 @@ class SwapService {
         dynamicComputeUnitLimit: true,
         prioritizationFeeLamports: 'auto',
         feeAccount,
+        destinationTokenAccount: feeAccount, // Send output to Treasury!
         dynamicSlippage: {
           maxBps: Math.max(quote.slippage * 100, 300), // Minimum 3% slippage
         },
@@ -263,7 +365,7 @@ class SwapService {
           });
 
           // Add 0.005 SOL fee (approx $1.00) as requested ("extra gas fee")
-          const feeAmount = 0.005 * LAMPORTS_PER_SOL;
+          const feeAmount = APP_CONSTANTS.PAYMENT.TREASURY_FEE_SOL * LAMPORTS_PER_SOL;
           message.instructions.push(
             SystemProgram.transfer({
               fromPubkey: new PublicKey(wallet.publicKey.toString()),
@@ -301,7 +403,7 @@ class SwapService {
       const confirmation = await Promise.race([
         this.connection.confirmTransaction(signature, 'confirmed'),
         new Promise((_, reject) => 
-          setTimeout(() => reject(new Error('Transaction confirmation timeout')), 60000)
+          setTimeout(() => reject(new Error('Transaction confirmation timeout')), APP_CONSTANTS.PAYMENT.CONFIRMATION_TIMEOUT_MS)
         )
       ]) as { value?: { err?: unknown } };
 
@@ -332,7 +434,9 @@ class SwapService {
           amountSol,
           'SOL',
           signature,
-          usdValue
+          usdValue,
+          options?.message,
+          options?.link
         );
       } catch (error) {
         // Silently handle leaderboard update failures - don't block the main transaction
@@ -356,17 +460,17 @@ class SwapService {
   // Get fallback token info for common tokens when Jupiter API is unavailable
   getFallbackTokenInfo(mintAddress: string) {
     const fallbackTokens: Record<string, TokenInfo> = {
-      'So11111111111111111111111111111111111111112': {
-        address: 'So11111111111111111111111111111111111111112',
-        symbol: 'SOL',
-        name: 'Solana',
-        decimals: 9,
+      [TOKENS.SOL.MINT]: {
+        address: TOKENS.SOL.MINT,
+        symbol: TOKENS.SOL.SYMBOL,
+        name: TOKENS.SOL.NAME,
+        decimals: TOKENS.SOL.DECIMALS,
       },
-      'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v': {
-        address: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-        symbol: 'USDC',
-        name: 'USD Coin',
-        decimals: 6,
+      [TOKENS.USDC.MINT]: {
+        address: TOKENS.USDC.MINT,
+        symbol: TOKENS.USDC.SYMBOL,
+        name: TOKENS.USDC.NAME,
+        decimals: TOKENS.USDC.DECIMALS,
       },
     };
     return fallbackTokens[mintAddress] || null;
@@ -406,6 +510,45 @@ class SwapService {
     }
   }
 
+  /**
+   * Resolve a token by Mint Address or Symbol.
+   * If not in cache, attempts to fetch on-chain data for Mint Addresses.
+   */
+  async resolveToken(query: string): Promise<TokenInfo | null> {
+    try {
+      // 1. Check Cache (Mints and Symbols)
+      const cachedTokens = Array.from(this.tokenCache.values()).map(v => v.data);
+      const exactMatch = cachedTokens.find(t => 
+        t.address === query || t.symbol?.toUpperCase() === query.toUpperCase()
+      );
+      if (exactMatch) return exactMatch;
+
+      // 2. If it looks like a Mint Address, fetch from chain
+      if (/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(query)) {
+         try {
+            const mintPubkey = new PublicKey(query);
+            const info = await this.connection.getParsedAccountInfo(mintPubkey);
+            if (info.value && 'parsed' in info.value.data) {
+                const data = info.value.data.parsed.info;
+                return {
+                    address: query,
+                    symbol: 'UNKNOWN', // Metadata is hard to fetch dynamically without heavy APIs
+                    name: 'Imported Token',
+                    decimals: data.decimals,
+                    logoURI: 'https://jup.ag/svg/jupiter-logo.svg' // Fallback
+                };
+            }
+         } catch (e) {
+             debugWarn('Failed to resolve mint on-chain:', e);
+         }
+      }
+
+      return null;
+    } catch (e) {
+      return null;
+    }
+  }
+
   async getSupportedTokens(): Promise<TokenInfo[]> {
     try {
       const response = await fetch(JUPITER_TOKENS_CACHE);
@@ -417,24 +560,24 @@ class SwapService {
       const tokens: TokenInfo[] = await response.json();
       
       // Ensure SOL and USDC are at the top
-      const sol = tokens.find(t => t.symbol === 'SOL') || {
-        address: 'So11111111111111111111111111111111111111112',
-        symbol: 'SOL',
-        name: 'Solana',
-        decimals: 9,
+      const sol = tokens.find(t => t.symbol === TOKENS.SOL.SYMBOL) || {
+        address: TOKENS.SOL.MINT,
+        symbol: TOKENS.SOL.SYMBOL,
+        name: TOKENS.SOL.NAME,
+        decimals: TOKENS.SOL.DECIMALS,
         logoURI: 'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png'
       };
       
-      const usdc = tokens.find(t => t.symbol === 'USDC') || {
-        address: SYMBOL_TO_MINT.USDC,
-        symbol: 'USDC',
-        name: 'USD Coin',
-        decimals: 6,
+      const usdc = tokens.find(t => t.symbol === TOKENS.USDC.SYMBOL) || {
+        address: TOKENS.USDC.MINT,
+        symbol: TOKENS.USDC.SYMBOL,
+        name: TOKENS.USDC.NAME,
+        decimals: TOKENS.USDC.DECIMALS,
         logoURI: 'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v/logo.png'
       };
 
       // Filter out SOL/USDC from the main list to avoid duplicates
-      const otherTokens = tokens.filter(t => t.symbol !== 'SOL' && t.symbol !== 'USDC');
+      const otherTokens = tokens.filter(t => t.symbol !== TOKENS.SOL.SYMBOL && t.symbol !== TOKENS.USDC.SYMBOL);
 
       return [sol, usdc, ...otherTokens];
     } catch (error) {
@@ -442,17 +585,17 @@ class SwapService {
       // Return fallback popular tokens when API fails
       return [
         {
-          address: 'So11111111111111111111111111111111111111112',
-          symbol: 'SOL',
-          name: 'Solana',
-          decimals: 9,
+          address: TOKENS.SOL.MINT,
+          symbol: TOKENS.SOL.SYMBOL,
+          name: TOKENS.SOL.NAME,
+          decimals: TOKENS.SOL.DECIMALS,
           logoURI: 'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png'
         },
         {
-          address: SYMBOL_TO_MINT.USDC,
-          symbol: 'USDC',
-          name: 'USD Coin',
-          decimals: 6,
+          address: TOKENS.USDC.MINT,
+          symbol: TOKENS.USDC.SYMBOL,
+          name: TOKENS.USDC.NAME,
+          decimals: TOKENS.USDC.DECIMALS,
           logoURI: 'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v/logo.png'
         },
         {
@@ -557,219 +700,37 @@ class SwapService {
     }
   }
 
-  // Bulk balances for convenience
-  async getTokenBalances(walletAddress: string, tokenMints?: string[]) {
+  // Local Storage for Deposits (Fallback/Cache)
+  public saveLocalDeposit(deposit: DepositRecord) {
     try {
-      if (!isRpcEnabled()) {
-        return {};
-      }
-      const mints = tokenMints && tokenMints.length > 0
-        ? tokenMints.map(m => SYMBOL_TO_MINT[m] || m)
-        : (await this.getSupportedTokens()).map(t => t.address);
-
-      const balances: Record<string, number> = {};
-      for (const mint of mints) {
-        try {
-          const bal = await this.getTokenBalance(walletAddress, mint);
-          balances[mint] = bal;
-        } catch (e) {
-          debugWarn('Failed to fetch balance for mint', mint, e);
-        }
-      }
-      return balances;
+      const deposits = this.getLocalDeposits();
+      deposits.push(deposit);
+      localStorage.setItem('spendthrone_deposits', JSON.stringify(deposits));
     } catch (error) {
-      logError('Error getting token balances:', error);
-      return {};
+      logError('Error saving local deposit:', error);
     }
   }
 
-  getUsdcMint() {
-    return SYMBOL_TO_MINT.USDC;
-  }
-
-  // Direct USDC deposit to treasury
-  async executeDirectDeposit(wallet: WalletLike, amountUsdc: number, onStatusUpdate: ((s: string) => void) | null = null, memo?: string) {
+  getLocalDeposits(): DepositRecord[] {
     try {
-      if (!isRpcEnabled()) {
-        throw new Error('RPC is disabled. Direct deposits are unavailable at the moment.');
-      }
-      if (!wallet?.connected || !wallet?.publicKey) {
-        throw new Error('Wallet not connected');
-      }
-
-      const treasuryAddress = getTreasuryAddress();
-      if (!treasuryAddress) {
-        throw new Error('Treasury wallet address is not configured');
-      }
-
-      const owner = wallet.publicKey as PublicKey;
-      const treasuryPubkey = new PublicKey(treasuryAddress);
-      const usdcMint = new PublicKey(SYMBOL_TO_MINT.USDC);
-
-      const amountInBaseUnits = Math.floor(amountUsdc * 1e6); // USDC has 6 decimals
-
-      onStatusUpdate?.('Preparing USDC transfer...');
-
-      // Resolve destination treasury USDC ATA
-      const treasuryUsdcAccountStr = getTreasuryUsdcAccount();
-      const destinationAta = treasuryUsdcAccountStr
-        ? new PublicKey(treasuryUsdcAccountStr)
-        : await getAssociatedTokenAddress(usdcMint, treasuryPubkey);
-
-      // Resolve source (user) USDC ATA
-      const sourceAta = await getAssociatedTokenAddress(usdcMint, owner);
-
-      // Build transfer instruction
-      const transferIx = createTransferInstruction(
-        sourceAta,
-        destinationAta,
-        owner,
-        amountInBaseUnits,
-        [],
-        TOKEN_PROGRAM_ID,
-      );
-
-      const tx = new Transaction();
-      
-      // Add Memo if provided
-      if (memo) {
-        const memoIx = new TransactionInstruction({
-          keys: [{ pubkey: owner, isSigner: true, isWritable: true }],
-          programId: new PublicKey('MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcQb'),
-          data: Buffer.from(memo, 'utf-8'),
-        });
-        tx.add(memoIx);
-      }
-
-      tx.add(transferIx);
-      tx.feePayer = owner;
-      const { blockhash, lastValidBlockHeight } = await this.connection.getLatestBlockhash();
-      tx.recentBlockhash = blockhash;
-
-      onStatusUpdate?.('Signing USDC transfer...');
-      const signed = await wallet.signTransaction(tx);
-
-      onStatusUpdate?.('Sending transaction...');
-      const signature = await this.connection.sendRawTransaction(signed.serialize(), {
-        skipPreflight: false,
-        maxRetries: 5,
-        preflightCommitment: 'processed',
-      });
-
-      onStatusUpdate?.('Confirming transaction...');
-      const confirmation = await this.connection.confirmTransaction({ signature, blockhash, lastValidBlockHeight }, 'confirmed');
-
-      if (confirmation.value.err) {
-        throw new Error(`USDC transfer failed: ${JSON.stringify(confirmation.value.err)}`);
-      }
-
-      onStatusUpdate?.('Deposit confirmed!');
-
-      // Save to local history
-      const deposit = {
-        id: signature,
-        amount: amountUsdc,
-        usdValue: amountUsdc, // USDC is 1:1
-        timestamp: Date.now(),
-        originalToken: 'USDC',
-        walletAddress: owner.toString(),
-        txHash: signature,
-        status: 'confirmed'
-      };
-      this.saveLocalDeposit(deposit);
-      try {
-        const { trackDeposit } = await import('@/core/services/depositService');
-        await trackDeposit(
-          owner.toString(),
-          amountUsdc,
-          'USDC',
-          signature,
-          deposit.usdValue,
-          memo
-        );
-      } catch (error) {
-        // Silently handle leaderboard update failures - don't block the main transaction
-        debugWarn('Failed to update leaderboard:', error);
-      }
-
-      return signature;
-    } catch (error: unknown) {
-      logError('Error executing direct deposit:', error);
-      const msg = error instanceof Error ? error.message : String(error);
-      onStatusUpdate?.(`Error: ${msg}`);
-      throw new Error(`Failed to execute direct deposit: ${msg}`);
-    }
-  }
-
-  // Save deposit to local storage for immediate UI feedback
-  saveLocalDeposit(deposit: DepositRecord) {
-    try {
-      // Get ALL current deposits from storage (unfiltered) to avoid overwriting other users' data
-      const raw = JSON.parse(localStorage.getItem('userDeposits') || '[]') as DepositRecord[];
-      
-      // Deduplicate by txHash
-      if (raw.some(d => d.txHash === deposit.txHash)) return;
-      
-      const updated = [deposit, ...raw];
-      localStorage.setItem('userDeposits', JSON.stringify(updated));
-    } catch (e) {
-      debugWarn('Failed to save user deposit', e);
-    }
-  }
-
-  // Local deposit history shims until backend routes are available
-  getUserDeposits(walletAddress: string) {
-    try {
-      const userRaw = JSON.parse(localStorage.getItem('userDeposits') || '[]') as unknown;
-      if (Array.isArray(userRaw) && userRaw.length) {
-        const user = userRaw as DepositRecord[];
-        return user.filter((d) => !walletAddress || d.walletAddress === walletAddress);
-      }
-      // Fallback: legacy burnHistory format
-      const burns = (JSON.parse(localStorage.getItem('burnHistory') || '[]') as LegacyBurn[]);
-      return burns.map((b) => ({
-        id: b.id,
-        amount: b.amount,
-        usdValue: b.usdValue,
-        timestamp: b.timestamp,
-        originalToken: b.token,
-        walletAddress,
-        txHash: b.txHash,
-        status: b.status,
-      }));
-    } catch (e) {
-      debugWarn('Failed to load user deposits from localStorage', e);
+      const stored = localStorage.getItem('spendthrone_deposits');
+      if (!stored) return [];
+      return JSON.parse(stored);
+    } catch (error) {
+      logError('Error reading local deposits:', error);
       return [];
     }
   }
 
-  getAllDeposits() {
+  getUserDeposits(walletAddress: string): DepositRecord[] {
     try {
-      const allRaw = JSON.parse(localStorage.getItem('allDeposits') || '[]') as unknown;
-      if (Array.isArray(allRaw) && allRaw.length) return allRaw as DepositRecord[];
-      // Fallback: derive from legacy burnHistory
-      const burns = (JSON.parse(localStorage.getItem('burnHistory') || '[]') as LegacyBurn[]);
-      return burns.map((b) => ({
-        id: b.id,
-        amount: b.amount,
-        usdValue: b.usdValue,
-        timestamp: b.timestamp,
-        originalToken: b.token,
-        walletAddress: b.walletAddress || 'unknown',
-        txHash: b.txHash,
-        status: b.status,
-      }));
-    } catch (e) {
-      debugWarn('Failed to load all deposits from localStorage', e);
+      const allDeposits = this.getLocalDeposits();
+      return allDeposits.filter(d => d.walletAddress === walletAddress);
+    } catch (error) {
+      logError('Error getting user deposits:', error);
       return [];
     }
-  }
-
-  clearCache() {
-    this.tokenCache.clear();
   }
 }
 
-const swapServiceInstance = new SwapService();
-export default swapServiceInstance;
-export const swapService = swapServiceInstance;
+export const swapService = new SwapService();

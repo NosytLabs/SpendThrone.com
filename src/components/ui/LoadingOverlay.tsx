@@ -6,7 +6,7 @@ interface LoadingOverlayProps {
   isLoading: boolean;
   message?: string;
   subMessage?: string;
-  variant?: 'spinner' | 'dots' | 'bars' | 'pulse' | 'wave' | 'lottie';
+  variant?: 'spinner' | 'dots' | 'bars' | 'pulse' | 'wave' | 'crown';
   size?: 'sm' | 'md' | 'lg' | 'xl';
   color?: 'primary' | 'secondary' | 'white';
   opacity?: 'light' | 'medium' | 'dark';

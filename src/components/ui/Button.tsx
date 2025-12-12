@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { cn } from '@/shared/utils/utils';
 import { RippleEffect } from './AnimationUtilities';
+import { useSoundEffects } from './useSoundEffects';
 
 /**
  * Professional Button Component
@@ -23,6 +24,9 @@ export interface ButtonProps {
   type?: 'button' | 'submit' | 'reset';
   fullWidth?: boolean;
   title?: string;
+  'aria-label'?: string;
+  'aria-expanded'?: boolean;
+  'aria-controls'?: string;
   ripple?: boolean;
   glow?: boolean;
   pulse?: boolean;
@@ -66,6 +70,7 @@ export const Button: React.FC<ButtonProps> = ({
   soundEffect = false,
   ...props
 }) => {
+  const { playSound } = useSoundEffects();
   const speedMap = {
     slow: 'duration-300',
     normal: 'duration-200',
@@ -176,8 +181,7 @@ export const Button: React.FC<ButtonProps> = ({
     if (isDisabled || !onClick) return;
 
     if (soundEffect) {
-      // Play click sound (you'd need to implement audio context)
-      // Sound effect would be played here in a real implementation
+      playSound('click');
     }
 
     // If loading prop is managed externally, we don't need to set local loading state
@@ -250,38 +254,5 @@ export const Button: React.FC<ButtonProps> = ({
 };
 
 // Pre-defined button components
-export const PrimaryButton: React.FC<Omit<ButtonProps, 'variant'>> = (props) => (
-  <Button variant="primary" {...props} />
-);
-PrimaryButton.displayName = 'PrimaryButton';
-
-export const SecondaryButton: React.FC<Omit<ButtonProps, 'variant'>> = (props) => (
-  <Button variant="secondary" {...props} />
-);
-SecondaryButton.displayName = 'SecondaryButton';
-
-export const OutlineButton: React.FC<Omit<ButtonProps, 'variant'>> = (props) => (
-  <Button variant="outline" {...props} />
-);
-OutlineButton.displayName = 'OutlineButton';
-
-export const GhostButton: React.FC<Omit<ButtonProps, 'variant'>> = (props) => (
-  <Button variant="ghost" {...props} />
-);
-GhostButton.displayName = 'GhostButton';
-
-export const GradientButton: React.FC<Omit<ButtonProps, 'variant'>> = (props) => (
-  <Button variant="gradient" {...props} />
-);
-GradientButton.displayName = 'GradientButton';
-
-export const GlassButton: React.FC<Omit<ButtonProps, 'variant'>> = (props) => (
-  <Button variant="glass" {...props} />
-);
-GlassButton.displayName = 'GlassButton';
-
-// Alias for backward compatibility
-export const EnhancedButton = Button;
-export type EnhancedButtonProps = ButtonProps;
 
 export default Button;

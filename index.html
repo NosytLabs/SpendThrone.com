@@ -1,70 +1,103 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <script>
+      !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.async=!0,p.src=s.api_host+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys getNextSurveyStep onSessionId".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+      posthog.init('phc_MOCK_KEY_REPLACE_WITH_REAL_ONE', {api_host: 'https://app.posthog.com', person_profiles: 'identified_only'})
+    </script>
+    <!-- Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-MOCK_KEY"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-MOCK_KEY');
+    </script>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="apple-touch-icon" href="/icons/icon-512.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<head>
-  <meta charset="UTF-8" />
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Optimized preconnects - only for actively used resources -->
+    <link rel="preconnect" href="https://api.coingecko.com" />
+    <link rel="dns-prefetch" href="https://api.helius.xyz" />
 
+    <!-- SEO Meta Tags -->
+    <title>SpendThrone - Financial Status Competition on Solana</title>
+    <meta
+      name="description"
+      content="Join SpendThrone.com - A satirical Solana-based dApp where financial status meets competition. Burn tokens, climb leaderboards, and claim your throne in the ultimate wealth display game."
+    />
+    <meta
+      name="keywords"
+      content="Solana, DeFi, dApp, cryptocurrency, financial competition, token burning, leaderboard, blockchain game"
+    />
+    <meta name="author" content="SpendThrone" />
+    <meta name="robots" content="index, follow" />
 
+    <!-- Open Graph Meta Tags -->
+    <meta
+      property="og:title"
+      content="SpendThrone - Financial Status Competition on Solana"
+    />
+    <meta
+      property="og:description"
+      content="Join the ultimate financial status competition. Burn tokens, climb leaderboards, and claim your throne on Solana."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://spendthrone.com" />
+    <meta property="og:site_name" content="SpendThrone" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:image" content="https://spendthrone.com/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:alt" content="SpendThrone - Financial Status Competition on Solana" />
 
-  <!-- Optimized preconnects - only for actively used resources -->
-  <link rel="preconnect" href="https://api.coingecko.com" />
-  <link rel="dns-prefetch" href="https://api.helius.xyz" />
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="SpendThrone - Financial Status Competition"
+    />
+    <meta
+      name="twitter:description"
+      content="Join the ultimate financial status competition on Solana. Burn tokens and claim your throne."
+    />
+    <meta name="twitter:creator" content="@SpendThrone" />
+    <meta name="twitter:image" content="https://spendthrone.com/og-image.png" />
 
-  <!-- SEO Meta Tags -->
-  <title>SpendThrone - Financial Status Competition on Solana</title>
-  <meta name="description"
-    content="Join SpendThrone.com - A satirical Solana-based dApp where financial status meets competition. Burn tokens, climb leaderboards, and claim your throne in the ultimate wealth display game." />
-  <meta name="keywords"
-    content="Solana, DeFi, dApp, cryptocurrency, financial competition, token burning, leaderboard, blockchain game" />
-  <meta name="author" content="SpendThrone" />
-  <meta name="robots" content="index, follow" />
-
-  <!-- Open Graph Meta Tags -->
-  <meta property="og:title" content="SpendThrone - Financial Status Competition on Solana" />
-  <meta property="og:description"
-    content="Join the ultimate financial status competition. Burn tokens, climb leaderboards, and claim your throne on Solana." />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://spendthrone.com" />
-  <meta property="og:site_name" content="SpendThrone" />
-  <meta property="og:locale" content="en_US" />
-  <meta property="og:image" content="/favicon.svg" />
-  <meta property="og:image:type" content="image/svg+xml" />
-  <meta property="og:image:alt" content="SpendThrone" />
-
-  <!-- Twitter Card Meta Tags -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="SpendThrone - Financial Status Competition" />
-  <meta name="twitter:description"
-    content="Join the ultimate financial status competition on Solana. Burn tokens and claim your throne." />
-  <meta name="twitter:creator" content="@SpendThrone" />
-  <meta name="twitter:image" content="/favicon.svg" />
-
-  <!-- Performance optimization: preload critical resources -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link rel="preload"
-    href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,100..1000&family=Cinzel:wght@400;500;600;700;800;900&display=swap"
-    as="style" onload="this.onload=null;this.rel='stylesheet'" />
-  <noscript>
+    <!-- Performance optimization: preload critical resources -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
+      rel="preload"
       href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,100..1000&family=Cinzel:wght@400;500;600;700;800;900&display=swap"
-      rel="stylesheet" type="text/css" />
-  </noscript>
+      as="style"
+      onload="this.onload=null;this.rel='stylesheet'"
+    />
+    <noscript>
+      <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,100..1000&family=Cinzel:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet"
+        type="text/css"
+      />
+    </noscript>
 
-  <!-- Theme color for mobile browsers -->
-  <meta name="theme-color" content="#0a0a0a" />
-  <meta name="msapplication-TileColor" content="#ffd700" />
+    <!-- Theme color for mobile browsers -->
+    <meta name="theme-color" content="#0a0a0a" />
+    <meta name="msapplication-TileColor" content="#ffd700" />
 
-  <!-- Content Security Policy for enhanced security -->
-  <meta http-equiv="Content-Security-Policy"
-    content="default-src 'self'; script-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://use.fontawesome.com https://ka-f.fontawesome.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://use.fontawesome.com https://ka-f.fontawesome.com; font-src 'self' https://fonts.gstatic.com https://use.fontawesome.com https://ka-f.fontawesome.com; connect-src 'self' https://api.jup.ag https://cache.jup.ag https://api.mainnet-beta.solana.com https://mainnet.helius-rpc.com https://api.coingecko.com https://api.helius.xyz https://ka-f.fontawesome.com https://assets-v2.lottiefiles.com https://rpc.ankr.com https://solana-mainnet.rpc.extrnode.com https://solana-rpc.publicnode.com https://solana.drpc.org https://1rpc.io; img-src 'self' data: https:; base-uri 'self'; form-action 'self';">
-</head>
+    <!-- Content Security Policy for enhanced security -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://use.fontawesome.com https://ka-f.fontawesome.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://use.fontawesome.com https://ka-f.fontawesome.com; font-src 'self' https://fonts.gstatic.com https://use.fontawesome.com https://ka-f.fontawesome.com; connect-src 'self' https://api.jup.ag https://cache.jup.ag https://api.mainnet-beta.solana.com https://mainnet.helius-rpc.com https://api.coingecko.com https://api.helius.xyz https://ka-f.fontawesome.com https://assets-v2.lottiefiles.com https://rpc.ankr.com https://solana-mainnet.rpc.extrnode.com https://solana-rpc.publicnode.com https://solana.drpc.org https://1rpc.io; img-src 'self' data: https:; base-uri 'self'; form-action 'self';"
+    />
+  </head>
 
-<body>
-  <div id="root"></div>
-  <script type="module" src="/src/main.tsx"></script>
-</body>
-
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
 </html>

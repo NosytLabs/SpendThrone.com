@@ -1,6 +1,8 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
+import viteCompression from 'vite-plugin-compression';
+import path from 'path';
 
 
 // https://vitejs.dev/config/
@@ -10,17 +12,26 @@ export default defineConfig({
       // Enable React Fast Refresh
       fastRefresh: true,
     }),
-    nodePolyfills({ protocolImports: true }),
+    nodePolyfills({ 
+      include: ['buffer', 'process', 'util', 'stream', 'events'],
+      globals: {
+        process: true,
+        Buffer: true,
+        global: true,
+      },
+    }),
+    viteCompression(),
   ],
   resolve: {
     // Standardize absolute imports with the '@' alias pointing to project src
     alias: {
       '@': '/src',
+      'vite-plugin-node-polyfills/shims/process': path.resolve(__dirname, 'node_modules/vite-plugin-node-polyfills/shims/process'),
     },
   },
   esbuild: {
     target: 'es2020',
-    drop: process.env.NODE_ENV === 'production' ? ['debugger'] : [],
+    drop: process.env.NODE_ENV === 'production' ? ['console', 'debugger'] : [],
   },
   build: {
     // Optimize bundle splitting for better caching and performance
@@ -109,7 +120,15 @@ export default defineConfig({
       '@solana/wallet-adapter-react-ui',
       '@solana/wallet-adapter-wallets',
       '@solana/wallet-adapter-base',
-      'buffer'
+      'buffer',
+      'lucide-react'
     ]
+  },
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    setupFiles: ['./src/test/setup.ts'],
+    css: true,
+    include: ['src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
   }
 });

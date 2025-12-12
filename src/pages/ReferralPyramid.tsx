@@ -73,7 +73,7 @@ const ReferralPyramid: React.FC = () => {
 
   const copyLink = () => {
     if (!publicKey) return;
-    const link = `${window.location.origin}/api/actions/join?ref=${publicKey.toString()}`;
+    const link = `${window.location.origin}/?ref=${publicKey.toString()}`;
     window.navigator.clipboard.writeText(link);
     addToast({ title: 'Success!', description: 'Referral link copied! Share this link with friends to earn rewards', type: 'success' });
     setCopied(true);
@@ -104,13 +104,13 @@ const ReferralPyramid: React.FC = () => {
         {/* Satire Warning */}
         <RoyalCard variant="glass" className="mb-12 border-accent-primary/40 bg-accent-primary/5 shadow-[0_0_30px_rgba(234,179,8,0.15)] backdrop-blur-md relative overflow-hidden">
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-accent-primary to-transparent opacity-50"></div>
-          <div className="absolute -left-10 -top-10 w-40 h-40 bg-accent-primary/10 rounded-full blur-3xl animate-pulse"></div>
-          <div className="absolute -right-10 -bottom-10 w-40 h-40 bg-accent-primary/10 rounded-full blur-3xl animate-pulse delay-700"></div>
+          <div className="absolute -left-10 -top-10 w-40 h-40 bg-accent-primary/10 rounded-full blur-3xl"></div>
+          <div className="absolute -right-10 -bottom-10 w-40 h-40 bg-accent-primary/10 rounded-full blur-3xl"></div>
           
           <p className="relative text-accent-primary text-sm font-mono uppercase tracking-widest font-bold flex items-center justify-center gap-3 flex-wrap text-center">
-            <RoyalIcon variant="warning" size={18} className="animate-pulse flex-shrink-0" />
-            <span>Warning: This is a social experiment. Rewards are metaphysical.</span>
-            <RoyalIcon variant="warning" size={18} className="animate-pulse flex-shrink-0" />
+            <RoyalIcon variant="warning" size={18} className="flex-shrink-0" />
+            <span className="text-sm font-semibold">Referral system is in development. Check back soon!</span>
+            <RoyalIcon variant="warning" size={18} className="flex-shrink-0" />
           </p>
         </RoyalCard>
 
@@ -118,6 +118,21 @@ const ReferralPyramid: React.FC = () => {
           
           {/* THE PYRAMID VISUAL */}
           <div className="relative flex flex-col items-center justify-center py-12 min-h-[500px]">
+            {/* ILLUMINATI EYE OVERLAY */}
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-12 opacity-30 pointer-events-none">
+                <motion.div
+                    animate={{ rotate: 360 }}
+                    transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
+                >
+                    <svg width="600" height="600" viewBox="0 0 100 100" className="w-[800px] h-[800px]">
+                        <circle cx="50" cy="50" r="48" fill="none" stroke="currentColor" strokeWidth="0.2" className="text-accent-primary" strokeDasharray="1 1" />
+                        <circle cx="50" cy="50" r="38" fill="none" stroke="currentColor" strokeWidth="0.1" className="text-accent-primary" />
+                        <path d="M50 2 L98 98 L2 98 Z" fill="none" stroke="currentColor" strokeWidth="0.2" className="text-accent-primary" opacity="0.5" />
+                        <path d="M50 98 L98 2 L2 2 Z" fill="none" stroke="currentColor" strokeWidth="0.2" className="text-accent-primary" opacity="0.5" />
+                    </svg>
+                </motion.div>
+            </div>
+
             {/* God Tier */}
             <div className="relative z-40">
                 <motion.div 
@@ -126,7 +141,14 @@ const ReferralPyramid: React.FC = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.8, ease: "easeOut" }}
                 >
-                  <RoyalIcon variant="eye" className="text-black drop-shadow-lg animate-pulse" size={24} />
+                  <div className="relative">
+                      <RoyalIcon variant="eye" className="text-black drop-shadow-lg" size={24} />
+                      <motion.div 
+                        className="absolute inset-0 bg-white/50 rounded-full blur-sm"
+                        animate={{ opacity: [0, 0.5, 0] }}
+                        transition={{ duration: 2, repeat: Infinity }}
+                      />
+                  </div>
                 </motion.div>
                 {pyramidPosition === 'god' && <YouAreHereMarker />}
             </div>
@@ -356,7 +378,7 @@ const ReferralPyramid: React.FC = () => {
                   </div>
                   <span className="text-text-secondary text-sm leading-relaxed pt-1">
                     <strong className="text-white block mb-0.5">Eternal Glory</strong>
-                    You receive &quot;Divine Favor&quot; points. These points do nothing but make you feel superior to those with fewer points.
+                    You receive &quot;Divine Favor&quot;. The fastest way to earn favor is by building a large downline of loyal subjects.
                   </span>
                 </li>
               </ul>

@@ -1,12 +1,15 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useMemo } from 'react';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
-import { PublicKey, SystemProgram, Transaction, LAMPORTS_PER_SOL, TransactionInstruction } from '@solana/web3.js';
-import { Buffer } from 'buffer';
+import { PublicKey, SystemProgram, Transaction, LAMPORTS_PER_SOL } from '@solana/web3.js';
 import { APP_CONFIG } from '@/core/constants/appConfig';
 import { useDegradedMode } from '@/shared/hooks/useDegradedMode';
 import { swapService } from '@/core/services/swapService';
 import { priceService } from '@/core/services/priceService';
+import { trackDeposit } from '@/core/services/depositService';
 import { logError, debugWarn } from '@/shared/utils/logger';
+
+import { TOKENS } from '@/core/constants/tokens';
+import { createErrorHandler } from '@/shared/utils/errorHandler';
 
 export const usePayment = () => {
   const { connection } = useConnection();
@@ -17,7 +20,10 @@ export const usePayment = () => {
   const [txSignature, setTxSignature] = useState<string | null>(null);
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
 
-  const payTribute = useCallback(async (tokenSymbol: string, amount: number, tokenMint?: string, message?: string) => {
+  // Initialize standardized error handler
+  const errorHandler = useMemo(() => createErrorHandler(setError, 'usePayment'), []);
+
+  const payTribute = useCallback(async (tokenSymbol: string, amount: number, tokenMint?: string, message?: string, link?: string) => {
     if (isDegraded) {
       setError('Royal payments are temporarily disabled. Please try again later.');
       setStatusMessage(null);
@@ -42,20 +48,13 @@ export const usePayment = () => {
       let signature: string | null = null;
 
       // Case 1: SOL Deposit (Direct Transfer)
-      if (tokenSymbol === 'SOL') {
+      if (tokenSymbol === TOKENS.SOL.SYMBOL) {
         setStatusMessage('Preparing SOL transfer...');
         const treasuryPubkey = new PublicKey(APP_CONFIG.TREASURY_ADDRESS);
         const transaction = new Transaction();
         
-        // Add Memo if provided
-        if (message) {
-          const memoIx = new TransactionInstruction({
-            keys: [{ pubkey: publicKey, isSigner: true, isWritable: true }],
-            programId: new PublicKey('MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcQb'),
-            data: Buffer.from(message, 'utf-8'),
-          });
-          transaction.add(memoIx);
-        }
+        // We do not use the Memo Program on-chain to save costs/complexity
+        // The message is tracked in our database via the API call below
 
         transaction.add(
           SystemProgram.transfer({
@@ -75,28 +74,28 @@ export const usePayment = () => {
         });
 
         // Save local record and update leaderboard
-        const solPrice = await priceService.getTokenPrice('SOL');
+        const solPrice = await priceService.getTokenPrice(TOKENS.SOL.SYMBOL);
         const usdValue = amount * solPrice;
         swapService.saveLocalDeposit({
           id: signature,
           amount: amount,
           usdValue,
           timestamp: Date.now(),
-          originalToken: 'SOL',
+          originalToken: TOKENS.SOL.SYMBOL,
           walletAddress: publicKey.toString(),
           txHash: signature,
           status: 'confirmed'
         });
         // Reflect deposit in database leaderboard when configured
         try {
-          const { trackDeposit } = await import('@/core/services/depositService');
           await trackDeposit(
              publicKey.toString(),
              amount, // SOL amount
-             'SOL',
+             TOKENS.SOL.SYMBOL,
              signature,
              usdValue,
-             message
+             message,
+             link
            );
         } catch (error) {
           // Silently handle leaderboard update failures - don't block the main payment flow
@@ -104,10 +103,10 @@ export const usePayment = () => {
         }
       }
       // Case 2: USDC Deposit (Direct Transfer)
-      else if (tokenSymbol === 'USDC') {
+      else if (tokenSymbol === TOKENS.USDC.SYMBOL) {
         if (!signTransaction) throw new Error('Wallet does not support signing');
         const walletLike = { connected, publicKey, signTransaction };
-        signature = await swapService.executeDirectDeposit(walletLike, amount, setStatusMessage, message);
+        signature = await swapService.executeDirectDeposit(walletLike, amount, setStatusMessage, { message, link });
       }
       // Case 3: SPL Token Swap (Swap to USDC -> Treasury)
       else {
@@ -118,7 +117,7 @@ export const usePayment = () => {
         const quote = await swapService.getTokenToUsdcQuote(tokenMint, amount);
 
         const walletLike = { connected, publicKey, signTransaction };
-        const result = await swapService.executeSwap(quote, walletLike, setStatusMessage);
+        const result = await swapService.executeSwap(quote, walletLike, setStatusMessage, { message, link });
 
         if (!result.success) throw new Error('Swap failed');
         signature = result.txid;
@@ -134,14 +133,18 @@ export const usePayment = () => {
 
     } catch (err: unknown) {
       logError('Payment failed:', err);
-      const errorMessage = err instanceof Error ? err.message : 'Transaction failed';
-      setError(errorMessage);
+      // Use standardized error handler
+      errorHandler.handleError(err, {
+        context: 'payTribute',
+        fallbackMessage: 'Transaction failed',
+        showToast: true 
+      });
       setStatusMessage(null);
       return false;
     } finally {
       setIsProcessing(false);
     }
-  }, [connection, publicKey, sendTransaction, signTransaction, connected, isDegraded]);
+  }, [connection, publicKey, sendTransaction, signTransaction, connected, isDegraded, errorHandler]);
 
   return {
     payTribute,

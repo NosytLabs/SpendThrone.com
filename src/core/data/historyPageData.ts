@@ -14,6 +14,9 @@ export interface HistoryCardData {
     links: { label: string; url: string }[];
     statusType: StatusType;
     highlightText?: string[]; // Text to bold
+    imageUrl?: string;
+    cost?: string;
+    type?: string;
     extraContent?: {
         title: string;
         items: { icon: RoyalIconProps['variant']; text: string; iconColor: string }[];
@@ -24,18 +27,20 @@ export interface HistoryCardData {
 export interface HistoryEraData {
     id: string;
     title: string;
-    dateRange: string;
+    yearRange: string;
+    dateRange?: string; // For compatibility
     icon: RoyalIconProps['variant'];
     iconColor: string; // e.g. "text-accent-secondary"
     colorClass: string; // e.g. "accent-secondary" for borders
     cards: HistoryCardData[];
 }
 
-export const historyPageData: HistoryEraData[] = [
+export const historyPageData: { eras: HistoryEraData[] } = {
+    eras: [
     {
         id: 'ancient',
         title: 'Ancient World',
-        dateRange: '3000 BC - 500 AD',
+        yearRange: '3000 BC - 500 AD',
         icon: 'pyramid',
         iconColor: 'text-accent-secondary',
         colorClass: 'accent-secondary',
@@ -50,6 +55,7 @@ export const historyPageData: HistoryEraData[] = [
                 borderColor: 'border-rose-600',
                 statusType: 'luxury',
                 highlightText: ['dissolved a massive natural pearl', '10 million sesterces'],
+                cost: '10M Sesterces',
                 tags: [
                     { label: 'Cost: 10M Sesterces', colorClass: 'bg-amber-500/20 text-amber-400' },
                     { label: 'Method: Drank it', colorClass: 'bg-rose-500/20 text-rose-400' }
@@ -57,6 +63,26 @@ export const historyPageData: HistoryEraData[] = [
                 links: [
                     { label: 'Britannica', url: 'https://www.britannica.com/biography/Cleopatra-queen-of-Egypt' },
                     { label: 'History Channel', url: 'https://www.history.com/news/10-little-known-facts-about-cleopatra' }
+                ]
+            },
+            {
+                id: 'crassus-fire-brigade',
+                year: '70 BC',
+                title: 'Crassus\'s Fire Brigade',
+                description: "Marcus Licinius Crassus, the richest man in Rome, owned a 500-man fire brigade. When a house caught fire, he'd arrive and offer to buy it for pennies. If the owner refused, he let it burn. If they agreed, his men put it out. The original predatory capitalist.",
+                icon: 'fire',
+                iconColor: 'text-orange-600',
+                borderColor: 'border-orange-700',
+                statusType: 'technology', // Using technology (service) innovation
+                highlightText: ['buy it for pennies', 'let it burn'],
+                cost: 'Rome\'s Real Estate',
+                tags: [
+                    { label: 'Net Worth: ~200M Sesterces', colorClass: 'bg-yellow-500/20 text-yellow-400' },
+                    { label: 'Method: Extortion', colorClass: 'bg-red-500/20 text-red-400' }
+                ],
+                links: [
+                    { label: 'Britannica', url: 'https://www.britannica.com/biography/Marcus-Licinius-Crassus' },
+                    { label: 'University of Chicago', url: 'https://penelope.uchicago.edu/Thayer/E/Roman/Texts/Plutarch/Lives/Crassus*.html' }
                 ]
             },
             {
@@ -69,6 +95,7 @@ export const historyPageData: HistoryEraData[] = [
                 borderColor: 'border-yellow-600',
                 statusType: 'architecture',
                 highlightText: ['walls covered in gold', 'rotating dining room'],
+                cost: '2.5 Billion Sesterces',
                 tags: [
                     { label: 'Size: 300 acres', colorClass: 'bg-yellow-500/20 text-yellow-400' },
                     { label: 'Ego: 120ft Statue', colorClass: 'bg-red-500/20 text-red-400' }
@@ -88,6 +115,7 @@ export const historyPageData: HistoryEraData[] = [
                 borderColor: 'border-indigo-600',
                 statusType: 'architecture',
                 highlightText: ['75 feet high'],
+                cost: 'Unknown (Incalculable)',
                 tags: [
                     { label: 'Height: 75 feet', colorClass: 'bg-indigo-500/20 text-indigo-400' },
                     { label: 'Exotic imports', colorClass: 'bg-green-500/20 text-green-400' }
@@ -107,6 +135,7 @@ export const historyPageData: HistoryEraData[] = [
                 borderColor: 'border-red-600',
                 statusType: 'events',
                 highlightText: ['massive parades', 'looted treasures'],
+                cost: 'Priceless War Loot',
                 tags: [
                     { label: 'Spectacle: Public Parade', colorClass: 'bg-red-500/20 text-red-400' },
                     { label: 'Cost: War Loot', colorClass: 'bg-amber-500/20 text-amber-400' }
@@ -126,6 +155,7 @@ export const historyPageData: HistoryEraData[] = [
                 borderColor: 'border-teal-600',
                 statusType: 'art',
                 highlightText: ['8,000 life-sized soldiers'],
+                cost: 'Decades of Labor',
                 tags: [
                     { label: 'Army: 8,000 soldiers', colorClass: 'bg-teal-500/20 text-teal-400' },
                     { label: 'Unique figures', colorClass: 'bg-amber-500/20 text-amber-400' }
@@ -145,6 +175,7 @@ export const historyPageData: HistoryEraData[] = [
                 borderColor: 'border-accent-secondary',
                 statusType: 'architecture',
                 highlightText: ['100,000 workers', '110 kg solid gold coffin'],
+                cost: 'National Economy',
                 tags: [
                     { label: 'Labor: 100,000 workers', colorClass: 'bg-accent-secondary/20 text-accent-secondary' },
                     { label: 'Gold: 110kg coffin', colorClass: 'bg-amber-500/20 text-amber-400' }
@@ -155,15 +186,16 @@ export const historyPageData: HistoryEraData[] = [
                 ]
             },
             {
-                id: 'roman-triumphs-caesar',
+                id: 'caesar-triumph',
                 year: '46 BC',
-                title: 'Roman Triumphs',
-                description: "Julius Caesar's triumph lasted four days. Generals paraded elephants, gold, and captured kings through Rome. These spectacles cost a fortune and had one purpose: signal dominance and buy political favor.",
+                title: "Caesar's Four-Day Triumph",
+                description: "Julius Caesar's triumph lasted four days with unprecedented spectacle. He paraded elephants, gold, and captured kings through Rome. These spectacles cost a fortune and had one purpose: signal dominance and buy political favor.",
                 icon: 'crown',
                 iconColor: 'text-amber-500',
                 borderColor: 'border-amber-600',
                 statusType: 'events',
-                highlightText: ['four days'],
+                highlightText: ['four days', 'elephants'],
+                cost: 'War Spoils',
                 tags: [
                     { label: 'Duration: 4 days', colorClass: 'bg-amber-500/20 text-amber-400' },
                     { label: 'Elephants & Gold', colorClass: 'bg-red-500/20 text-red-400' }
@@ -183,6 +215,7 @@ export const historyPageData: HistoryEraData[] = [
                 borderColor: 'border-orange-600',
                 statusType: 'events',
                 highlightText: ['burn canoes, copper shields, and food'],
+                cost: 'Entire Fortune',
                 tags: [
                     { label: 'Location: Pacific Northwest', colorClass: 'bg-orange-500/20 text-orange-400' },
                     { label: 'Destroyed: Canoes & Copper', colorClass: 'bg-red-500/20 text-red-400' }
@@ -349,7 +382,7 @@ export const historyPageData: HistoryEraData[] = [
     {
         id: 'medieval',
         title: 'Medieval & Renaissance',
-        dateRange: '500 AD - 1800 AD',
+        yearRange: '500 AD - 1800 AD',
         icon: 'swords',
         iconColor: 'text-accent-primary',
         colorClass: 'accent-primary',
@@ -409,6 +442,63 @@ export const historyPageData: HistoryEraData[] = [
                 links: [
                     { label: 'History.com', url: 'https://www.history.com/news/what-was-life-like-for-a-viking-woman' },
                     { label: 'Museum of Oslo', url: 'https://www.khm.uio.no/english/visit-us/viking-ship-museum/' }
+                ]
+            },
+            {
+                id: 'court-jester',
+                year: '1200-1600 AD',
+                title: 'The Court Jester',
+                description: 'Professional fools held a unique position in medieval courts: they could mock kings without losing their heads. Triboulet, jester to French kings, once slapped Francis I on the backside and lived to tell the tale. The only person allowed to speak truth to absolute power—through comedy.',
+                icon: 'star',
+                iconColor: 'text-purple-500',
+                borderColor: 'border-purple-600',
+                statusType: 'events',
+                highlightText: ['mock kings without losing their heads', 'speak truth to absolute power'],
+                tags: [
+                    { label: 'Role: Professional Fool', colorClass: 'bg-purple-500/20 text-purple-400' },
+                    { label: 'Privilege: Mock the King', colorClass: 'bg-amber-500/20 text-amber-400' }
+                ],
+                links: [
+                    { label: 'Britannica', url: 'https://www.britannica.com/art/court-jester' },
+                    { label: 'History Extra', url: 'https://www.historyextra.com/period/medieval/history-of-the-court-jester/' }
+                ]
+            },
+            {
+                id: 'peasant-revolt',
+                year: '1381',
+                title: 'Wat Tyler\'s Peasant Revolt',
+                description: 'When English peasants rose up against poll taxes, 60,000 commoners marched on London, beheaded the Archbishop of Canterbury, and briefly held the capital. Their leader Wat Tyler was killed during peace negotiations. The ultimate "bank run" against the crown—it failed, but the fear lingered.',
+                icon: 'swords',
+                iconColor: 'text-red-600',
+                borderColor: 'border-red-700',
+                statusType: 'events',
+                highlightText: ['60,000 commoners marched on London', 'beheaded the Archbishop'],
+                tags: [
+                    { label: 'Participants: 60,000', colorClass: 'bg-red-500/20 text-red-400' },
+                    { label: 'Result: Suppressed', colorClass: 'bg-slate-500/20 text-slate-400' }
+                ],
+                links: [
+                    { label: 'Britannica', url: 'https://www.britannica.com/event/Peasants-Revolt' },
+                    { label: 'History.com', url: 'https://www.history.com/topics/middle-ages/peasants-revolt' }
+                ]
+            },
+            {
+                id: 'kings-ransom',
+                year: '1192',
+                title: 'Richard I\'s Ransom',
+                description: 'When Richard the Lionheart was captured by the Holy Roman Emperor, England had to pay 150,000 marks of silver to free him—roughly three times the annual income of the entire English crown. The term "King\'s Ransom" was born. England was literally taxed into poverty to buy back one man.',
+                icon: 'coins',
+                iconColor: 'text-amber-400',
+                borderColor: 'border-amber-500',
+                statusType: 'luxury',
+                highlightText: ['150,000 marks of silver', 'taxed into poverty'],
+                tags: [
+                    { label: 'Cost: 150,000 Marks', colorClass: 'bg-amber-500/20 text-amber-400' },
+                    { label: 'Impact: National Debt', colorClass: 'bg-red-500/20 text-red-400' }
+                ],
+                links: [
+                    { label: 'Britannica', url: 'https://www.britannica.com/biography/Richard-I-king-of-England' },
+                    { label: 'History Extra', url: 'https://www.historyextra.com/period/medieval/richard-i-the-lionheart-life-death-facts/' }
                 ]
             },
             {
@@ -771,13 +861,32 @@ export const historyPageData: HistoryEraData[] = [
                     { label: 'Britannica', url: 'https://www.britannica.com/event/Tulip-Mania' },
                     { label: 'History.com', url: 'https://www.history.com/news/tulip-mania-financial-crash-holland' }
                 ]
+            },
+            {
+                id: 'hope-diamond',
+                year: '1666',
+                title: 'The Hope Diamond',
+                description: 'The 45.52-carat Hope Diamond passed through kings, queens, and socialites. $250 million estimated value for a rock with a "curse." Status through ownership of legendary objects with fabricated backstories.',
+                icon: 'diamond',
+                iconColor: 'text-rose-500',
+                borderColor: 'border-rose-600',
+                statusType: 'luxury',
+                highlightText: ['$250 million estimated value'],
+                tags: [
+                    { label: 'Size: 45.52 carats', colorClass: 'bg-rose-500/20 text-rose-400' },
+                    { label: 'Value: $250M', colorClass: 'bg-amber-500/20 text-amber-400' }
+                ],
+                links: [
+                    { label: 'Smithsonian', url: 'https://www.si.edu/exhibitions/hope-diamond' },
+                    { label: 'National Geographic', url: 'https://www.nationalgeographic.com/history/article/hope-diamond-curse-history' }
+                ]
             }
         ]
     },
     {
         id: 'modern',
         title: 'The Age of Excess',
-        dateRange: '1800 AD - Present Day',
+        yearRange: '1800 AD - Present Day',
         icon: 'rocket',
         iconColor: 'text-blue-500',
         colorClass: 'blue-500',
@@ -1010,44 +1119,8 @@ export const historyPageData: HistoryEraData[] = [
                     { label: 'Britannica', url: 'https://www.britannica.com/art/Faberge-egg' }
                 ]
             },
-            {
-                id: 'csgo-skins',
-                year: '2013',
-                title: 'CS:GO Skins',
-                description: 'Digital weapon finishes in Counter-Strike that do nothing for gameplay but cost thousands of dollars. A "Dragon Lore" AWP skin can sell for $400,000+. The first mass-market digital status economy.',
-                icon: 'gamepad',
-                iconColor: 'text-orange-500',
-                borderColor: 'border-orange-600',
-                statusType: 'technology',
-                highlightText: ['$400,000+'],
-                tags: [
-                    { label: 'Item: Dragon Lore', colorClass: 'bg-orange-500/20 text-orange-400' },
-                    { label: 'Utility: Zero', colorClass: 'bg-red-500/20 text-red-400' }
-                ],
-                links: [
-                    { label: 'PC Gamer', url: 'https://www.pcgamer.com/csgo-skin-most-expensive/' },
-                    { label: 'Steam Community', url: 'https://steamcommunity.com/market/' }
-                ]
-            },
-            {
-                id: 'blue-check',
-                year: '2022',
-                title: 'Paid Verification',
-                description: 'Social media platforms began selling verification badges. What was once a mark of notability became a subscription service. "Status as a Service" (StaaS) became a business model.',
-                icon: 'check',
-                iconColor: 'text-blue-500',
-                borderColor: 'border-blue-600',
-                statusType: 'technology',
-                highlightText: ['Status as a Service'],
-                tags: [
-                    { label: 'Cost: $8/month', colorClass: 'bg-blue-500/20 text-blue-400' },
-                    { label: 'Model: Subscription', colorClass: 'bg-green-500/20 text-green-400' }
-                ],
-                links: [
-                    { label: 'TechCrunch', url: 'https://techcrunch.com/2023/02/19/meta-verified-subscription-bundle-instagram-facebook/' },
-                    { label: 'The Verge', url: 'https://www.theverge.com/2022/11/5/23441982/twitter-blue-verification-checkmarks-rollout-ios-update' }
-                ]
-            },
+
+
             {
                 id: 'railroad-tycoons',
                 year: '1880s',
@@ -1143,25 +1216,7 @@ export const historyPageData: HistoryEraData[] = [
                     { label: 'Washington Post', url: 'https://www.washingtonpost.com/technology/2022/10/28/musk-twitter-deal/' }
                 ]
             },
-            {
-                id: 'nft-mania',
-                year: '2021',
-                title: 'NFT Mania',
-                description: 'CryptoPunks sold for millions. A 24x24 pixel JPEG was a receipt—proof you had ETH to burn. Zero utility, pure flex. SpendThrone removes the JPEG and keeps the receipt.',
-                icon: 'diamond',
-                iconColor: 'text-purple-500',
-                borderColor: 'border-purple-500',
-                statusType: 'technology',
-                highlightText: [],
-                tags: [
-                    { label: 'Size: 24x24 pixels', colorClass: 'bg-purple-500/20 text-purple-400' },
-                    { label: 'Value: Millions', colorClass: 'bg-green-500/20 text-green-400' }
-                ],
-                links: [
-                    { label: "Christie's", url: 'https://www.christies.com/features/10-things-to-know-about-CryptoPunks-11569-1.aspx' },
-                    { label: 'NY Times', url: 'https://www.nytimes.com/2021/08/22/arts/design/nft-art-collectors.html' }
-                ]
-            },
+
             {
                 id: 'tesla-space',
                 year: '2018',
@@ -1181,25 +1236,7 @@ export const historyPageData: HistoryEraData[] = [
                     { label: 'CNN', url: 'https://www.cnn.com/2018/02/06/tech/falcon-heavy-launch/index.html' }
                 ]
             },
-            {
-                id: 'hope-diamond',
-                year: '1666',
-                title: 'The Hope Diamond',
-                description: 'The 45.52-carat Hope Diamond passed through kings, queens, and socialites. $250 million estimated value for a rock with a "curse." Status through ownership of legendary objects with fabricated backstories.',
-                icon: 'diamond',
-                iconColor: 'text-rose-500',
-                borderColor: 'border-rose-600',
-                statusType: 'luxury',
-                highlightText: ['$250 million estimated value'],
-                tags: [
-                    { label: 'Size: 45.52 carats', colorClass: 'bg-rose-500/20 text-rose-400' },
-                    { label: 'Value: $250M', colorClass: 'bg-amber-500/20 text-amber-400' }
-                ],
-                links: [
-                    { label: 'Smithsonian', url: 'https://www.si.edu/exhibitions/hope-diamond' },
-                    { label: 'National Geographic', url: 'https://www.nationalgeographic.com/history/article/hope-diamond-curse-history' }
-                ]
-            },
+
             {
                 id: 'dot-com',
                 year: '1999',
@@ -1296,7 +1333,7 @@ export const historyPageData: HistoryEraData[] = [
                 ]
             },
             {
-                id: 'nft-mania-apes',
+                id: 'nft-mania',
                 year: '2021',
                 title: 'NFT Mania',
                 description: 'Digital images of monkeys sold for millions. "Bored Apes" became the new Rolex. People bought them not to look at, but to use as Twitter profile pictures to signal membership in an exclusive digital club.',
@@ -1471,7 +1508,7 @@ export const historyPageData: HistoryEraData[] = [
     {
         id: 'future',
         title: 'The On-Chain Era',
-        dateRange: '2025 and Beyond',
+        yearRange: '2025 and Beyond',
         icon: 'zap',
         iconColor: 'text-green-500',
         colorClass: 'green-500',
@@ -1637,4 +1674,5 @@ export const historyPageData: HistoryEraData[] = [
             }
         ]
     }
-];
+  ]
+};

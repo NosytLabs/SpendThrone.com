@@ -60,9 +60,9 @@ export const APP_CONFIG = {
 
   // Empty States
   EMPTY_STATES: {
-    NO_NOBLES: 'No nobles yet — make your first deposit to claim a spot.',
-    NO_LEADERBOARD_DATA: 'No leaderboard data available',
-    NO_TOKENS_FOUND: 'No tokens found'
+    NO_NOBLES: 'The throne room is empty. Be the first to claim your legacy.',
+    NO_LEADERBOARD_DATA: 'The scrolls of history are currently blank.',
+    NO_TOKENS_FOUND: 'No treasury assets discovered.'
   },
 
   // Navigation
@@ -73,6 +73,7 @@ export const APP_CONFIG = {
     { href: '/tiers', label: 'Tiers', icon: 'barChart' },
     { href: '/history', label: 'History', icon: 'scroll' },
     { href: '/profile', label: 'Profile', icon: 'user' },
+    { href: '/referral', label: 'Referral', icon: 'users' },
   ]
 } as const;
 

@@ -27,7 +27,7 @@ export const Skeleton: React.FC<SkeletonProps> = ({
   return (
     <div
       className={cn(
-        'bg-background-tertiary',
+        'bg-white/5 border border-white/5 backdrop-blur-sm',
         animated && 'animate-pulse',
         variantClasses[variant],
         className

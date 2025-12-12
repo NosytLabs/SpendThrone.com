@@ -1,12 +1,11 @@
 import React from 'react';
-import { useAppNavigation } from '@/shared/utils/navigation';
 import { PageLayout } from '../components/layout/PageLayout';
 import { PageHeader } from '../components/layout/PageHeader';
-import { Card, RoyalIcon } from '../components/ui';
+import { Card, RoyalIcon, RoyalCard, GlowPulse, Button } from '../components/ui';
 import { APP_CONFIG } from '@/core/constants/appConfig';
+import TechnologySection from '@/features/about/TechnologySection';
 
 const About: React.FC = () => {
-  const { navigateTo } = useAppNavigation();
 
   return (
     <PageLayout
@@ -182,29 +181,46 @@ const About: React.FC = () => {
               </li>
             </ul>
           </div>
-          <button
-            className="bg-accent-primary text-black font-bold py-3 px-6 rounded-lg hover:scale-105 transition-transform"
-            onClick={() => navigateTo('/history')}
+          <Button
+            as="link"
+            to="/history"
+            variant="secondary"
+            className="w-full sm:w-auto font-bold py-3 px-6 rounded-lg hover:scale-105 transition-transform border-2 border-accent-primary text-accent-primary hover:bg-accent-primary hover:text-black"
           >
+            <RoyalIcon variant="history" className="mr-2" />
             Read the Full History →
-          </button>
+          </Button>
         </Card>
 
+        {/* TECHNOLOGY SECTION */}
+        <TechnologySection />
+
         {/* CTA */}
-        <Card className="p-12 bg-gradient-to-r from-accent-secondary via-accent-primary to-accent-secondary rounded-2xl border-4 border-accent-primary text-center shadow-2xl">
-          <h2 className="text-4xl font-extrabold text-black mb-4">
-            Ready to Prove Your Status?
-          </h2>
-          <p className="text-xl text-black/80 mb-6 max-w-2xl mx-auto">
-            Join the experiment. Your tribute is waiting to be immortalized on-chain.
-          </p>
-          <button
-            className="bg-black text-accent-secondary font-bold py-4 px-10 rounded-full text-xl hover:scale-110 transition-transform shadow-2xl border-4 border-accent-secondary"
-            onClick={() => navigateTo('/')}
-          >
-            Pay Tribute Now
-          </button>
-        </Card>
+        <RoyalCard className="p-8 md:p-12 bg-gradient-to-r from-accent-secondary via-accent-primary to-accent-secondary rounded-2xl border-4 border-accent-primary text-center shadow-2xl overflow-visible relative">
+          <div className="relative z-10">
+            <h2 className="text-3xl md:text-5xl font-extrabold text-black mb-4 font-cinzel drop-shadow-sm">
+              Ready to Prove Your Status?
+            </h2>
+            <p className="text-lg md:text-2xl text-black/90 mb-8 max-w-2xl mx-auto font-medium font-serif italic">
+              Join the experiment. Your tribute is waiting to be immortalized on-chain.
+            </p>
+            <GlowPulse color="gold" intensity="strong" duration={2000}>
+              <Button
+                as="link"
+                to="/"
+                size="lg"
+                className="bg-black text-accent-primary font-bold py-4 px-12 rounded-full text-xl hover:scale-110 transition-transform shadow-2xl border-4 border-accent-secondary h-auto"
+              >
+                <RoyalIcon variant="crown" className="mr-3 text-gold-500" />
+                Pay Tribute Now
+              </Button>
+            </GlowPulse>
+          </div>
+          {/* Decorative background elements */ }
+          <div className="absolute top-0 left-0 w-full h-full overflow-hidden rounded-xl pointer-events-none">
+             <div className="absolute top-[-50%] left-[-50%] w-[200%] h-[200%] bg-[radial-gradient(circle,rgba(255,255,255,0.2)_0%,transparent_60%)] animate-spin-slow opacity-50"></div>
+          </div>
+        </RoyalCard>
 
       </div>
     </PageLayout>

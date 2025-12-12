@@ -10,6 +10,8 @@
 
 For detailed architecture, user flows, and design specifications, please refer to the **[Site Documentation](./SITE_DOCUMENTATION.md)**.
 
+For deep technical implementation details, crypto architecture, and feature breakdown, see the **[Technical Architecture](./TECHNICAL_ARCHITECTURE.md)**.
+
 For a history of updates, see the **[Changelog](./CHANGELOG.md)**.
 
 ---
@@ -28,16 +30,16 @@ For a history of updates, see the **[Changelog](./CHANGELOG.md)**.
 
 ## 🛠 Tech Stack
 
-- **Frontend**: [React](https://react.dev/) + [Vite](https://vitejs.dev/)
-- **Styling**: [Tailwind CSS](https://tailwindcss.com/) + Custom "Royal" Design System
-- **Language**: [TypeScript](https://www.typescriptlang.org/)
+- **Frontend**: [React 18](https://react.dev/) + [Vite 5](https://vitejs.dev/)
+- **Styling**: [Tailwind CSS 3.4](https://tailwindcss.com/) + Custom "Royal" Design System
+- **Language**: [TypeScript 5](https://www.typescriptlang.org/)
 - **Backend/DB**: [Supabase](https://supabase.com/) (PostgreSQL)
 - **Blockchain**:
-  - `@solana/web3.js`
-  - `@solana/wallet-adapter`
+  - `@solana/web3.js` (1.x)
+  - `@solana/wallet-adapter` (MWA Ready)
   - Jupiter Aggregator API (v6)
   - Solana Actions (Blinks)
-- **Testing**: Vitest, Playwright
+- **Testing**: Vitest (Unit), Playwright (E2E)
 
 ## 📦 Installation
 
@@ -72,6 +74,7 @@ For a history of updates, see the **[Changelog](./CHANGELOG.md)**.
 - **Unit Tests**: `npm run test` (Vitest)
 - **E2E Tests**: `npm run test:e2e` (Playwright)
 - **Linting**: `npm run lint`
+- **Health Check**: `npm run health-check` (Runs Lint + Types + Tests + Bundle Analysis)
 
 ## 📂 Project Structure
 
